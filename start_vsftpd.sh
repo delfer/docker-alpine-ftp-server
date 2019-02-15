@@ -1,7 +1,7 @@
 #/bin/sh
 
 #Remove all ftp users
-grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -n1 deluser
+grep ftp /etc/passwd | cut -d':' -f1 | xargs -n1 deluser
 
 #Create users
 #USERS='name1|password1|[folder1][|uid1] name2|password2|[folder2][|uid2]'
