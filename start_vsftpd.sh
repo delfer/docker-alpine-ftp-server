@@ -51,6 +51,10 @@ if [ ! -z "$ADDRESS" ]; then
   ADDR_OPT="-opasv_address=$ADDRESS"
 fi
 
-/usr/sbin/vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/vsftpd.conf
-#vsFTPd does not support loggin to stdout, use tail instead
-exec tail -F /var/log/vsftpd.log
+# Used to run custom commands inside container
+if [ ! -z "$1" ]; then
+  exec "$@"
+else
+  exec /usr/sbin/vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/vsftpd.conf
+fi
+
