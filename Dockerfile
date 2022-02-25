@@ -1,4 +1,4 @@
-FROM alpine:3.13
+FROM alpine:3.15
 RUN apk --no-cache add vsftpd
 
 COPY start_vsftpd.sh /bin/start_vsftpd.sh
