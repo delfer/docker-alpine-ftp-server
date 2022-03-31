@@ -55,6 +55,9 @@ fi
 if [ ! -z "$1" ]; then
   exec "$@"
 else
-  exec /usr/sbin/vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/vsftpd.conf
+  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/vsftpd.conf
+  [ -d /var/run/vsftpd ] || mkdir /var/run/vsftpd
+  pgrep vsftpd | tail -n 1 > /var/run/vsftpd/vsftpd.pid
+  exec pidproxy /var/run/vsftpd/vsftpd.pid true
 fi
 
