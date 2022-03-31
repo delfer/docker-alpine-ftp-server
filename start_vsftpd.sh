@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #Remove all ftp users
-grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -n1 deluser
+grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -r -n1 deluser
 
 #Create users
 #USERS='name1|password1|[folder1][|uid1] name2|password2|[folder2][|uid2]'
@@ -15,14 +15,15 @@ grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -n1 deluser
 #Default user 'ftp' with password 'alpineftp'
 
 if [ -z "$USERS" ]; then
-  USERS="ftp|alpineftp"
+  USERS="alpineftp|alpineftp"
 fi
 
 for i in $USERS ; do
-    NAME=$(echo $i | cut -d'|' -f1)
-    PASS=$(echo $i | cut -d'|' -f2)
+  NAME=$(echo $i | cut -d'|' -f1)
+  GROUP=$NAME
+  PASS=$(echo $i | cut -d'|' -f2)
   FOLDER=$(echo $i | cut -d'|' -f3)
-     UID=$(echo $i | cut -d'|' -f4)
+  UID=$(echo $i | cut -d'|' -f4)
 
   if [ -z "$FOLDER" ]; then
     FOLDER="/ftp/$NAME"
@@ -30,11 +31,16 @@ for i in $USERS ; do
 
   if [ ! -z "$UID" ]; then
     UID_OPT="-u $UID"
+    #Check if the group with the same ID already exists
+    GROUP=$(getent group $UID | cut -d: -f1)
+    if [ ! -z "$GROUP" ]; then
+      GROUP_OPT="-G $GROUP"
+    fi
   fi
 
-  echo -e "$PASS\n$PASS" | adduser -h $FOLDER -s /sbin/nologin $UID_OPT $NAME
+  echo -e "$PASS\n$PASS" | adduser -h $FOLDER -s /sbin/nologin $UID_OPT $GROUP_OPT $NAME
   mkdir -p $FOLDER
-  chown $NAME:$NAME $FOLDER
+  chown $NAME:$GROUP $FOLDER
   unset NAME PASS FOLDER UID
 done
 
