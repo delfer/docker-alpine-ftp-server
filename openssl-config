@@ -1,0 +1,14 @@
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
+[req_distinguished_name]
+C = EU
+ST = Some state
+L = SomeCity
+O = MyCompany
+OU = MyDivision
+CN = localhost
+[v3_req]
+keyUsage = keyEncipherment, dataEncipherment
+extendedKeyUsage = serverAuth

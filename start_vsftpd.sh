@@ -57,11 +57,39 @@ if [ ! -z "$ADDRESS" ]; then
   ADDR_OPT="-opasv_address=$ADDRESS"
 fi
 
+
+#Check for SSL support
+
+echo "SSL = $SSL"
+if [ "$SSL" = true ]; then
+  CONF_FILE="vsftpd-ssl.conf"
+  
+  if [ ! -f "/certs/vsftp.key" ]; then
+    mkdir -p /certs/
+
+    echo "Setup RSA key .."
+
+    echo "commonName              = localhost" >> /tmp/configfile
+
+    openssl genrsa -out /certs/vsftp.key 4096
+    openssl req -new -key /certs/vsftp.key -out /certs/vsftp.csr -config /openssl-config
+    openssl x509 -req -days 3650 -in /certs/vsftp.csr -signkey /certs/vsftp.key -out /certs/vsftp.crt
+    chmod 600 /certs/vsftp.key
+
+    rm /openssl-config 2>/dev/null
+  else
+    echo "RSA key found"
+  fi
+else
+  CONF_FILE="vsftpd.conf"
+fi
+
+
 # Used to run custom commands inside container
 if [ ! -z "$1" ]; then
   exec "$@"
 else
-  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/vsftpd.conf
+  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT /etc/vsftpd/$CONF_FILE
   [ -d /var/run/vsftpd ] || mkdir /var/run/vsftpd
   pgrep vsftpd | tail -n 1 > /var/run/vsftpd/vsftpd.pid
   exec pidproxy /var/run/vsftpd/vsftpd.pid true
