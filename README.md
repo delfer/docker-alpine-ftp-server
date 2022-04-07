@@ -9,6 +9,7 @@ docker run -d \
     -p 21000-21010:21000-21010 \
     -e USERS="one|1234" \
     -e ADDRESS=ftp.site.domain \
+    -e SSL=true \
     delfer/alpine-ftp-server
 ```
 
@@ -20,6 +21,7 @@ Environment variables:
 - `ADDRESS` - external address witch clients can connect passive ports (optional, should resolve to ftp server ip address)
 - `MIN_PORT` - minimum port number to be used for passive connections (optional, default `21000`)
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
+- `SSL` - Enable/Disable TLS
 
 ## USERS examples
 
