@@ -9,7 +9,18 @@ docker run -d \
     -p 21000-21010:21000-21010 \
     -e USERS="one|1234" \
     -e ADDRESS=ftp.site.domain \
+    delfer/alpine-ftp-server
+```
+
+## Usage (with TLS)
+```
+docker run -d \
+    -p 21:21 \
+    -p 21000-21010:21000-21010 \
+    -e USERS="one|1234" \
+    -e ADDRESS=ftp.site.domain \
     -e SSL=true \
+    -v "/path/to/folder:/certs" \
     delfer/alpine-ftp-server
 ```
 
