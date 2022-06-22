@@ -26,3 +26,33 @@ Environment variables:
 - `user|password foo|bar|/home/foo`
 - `user|password|/home/user/dir|10000`
 - `user|password||10000`
+
+## FTPS (File Transfer Protocol + SSL) Example
+
+Issue free Let's Encrypt certificate and use it with `alpine-ftp-server`.
+
+```
+mkdir -p /etc/letsencrypt
+docker run -it --rm \
+    -p 80:80 \
+    -v "/etc/letsencrypt:/etc/letsencrypt" \
+    certbot/certbot certonly \
+    --standalone \
+    --preferred-challenges http \
+    -n --agree-tos \
+    --email i@delfer.ru 
+    -d ftp.site.domain
+docker run -d \
+    --name ftp \
+    -p 21:21 \
+    -p 21000-21010:21000-21010 \
+    -e USERS="one|1234" \
+    -e ADDRESS=ftp.site.domain \
+    -e TLS_CERT="/etc/letsencrypt/live/ftp.site.domain/fullchain.pem" \
+    -e TLS_KEY="/etc/letsencrypt/live/ftp.site.domain/privkey.pem" \
+    delfer/alpine-ftp-server
+```
+
+- Do not forget to replace ftp.site.domain with actual domain pointing to your server's IP.
+- Be shure you have avalible port 80 for standalone mode of certbot to issue certificate.
+- Do not forget to renew certificate in 3 month with `certbot renew` command.
