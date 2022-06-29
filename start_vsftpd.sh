@@ -72,6 +72,10 @@ if [ ! -z "$TLS_CERT" ] || [ ! -z "$TLS_KEY" ]; then
   TLS_OPT="-orsa_cert_file=$TLS_CERT -orsa_private_key_file=$TLS_KEY -ossl_enable=YES -oallow_anon_ssl=NO -oforce_local_data_ssl=YES -oforce_local_logins_ssl=YES -ossl_tlsv1=YES -ossl_sslv2=NO -ossl_sslv3=NO -ossl_ciphers=HIGH"
 fi
 
+if [ ! -z "$TZ" ]; then
+  setup-timezone -z $TZ
+fi
+
 # Used to run custom commands inside container
 if [ ! -z "$1" ]; then
   exec "$@"
