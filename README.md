@@ -56,5 +56,5 @@ docker run -d \
 ```
 
 - Do not forget to replace ftp.site.domain with actual domain pointing to your server's IP.
-- Be shure you have avalible port 80 for standalone mode of certbot to issue certificate.
+- Be sure you have avalible port 80 for standalone mode of certbot to issue certificate.
 - Do not forget to renew certificate in 3 month with `certbot renew` command.
