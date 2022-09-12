@@ -22,9 +22,9 @@ Environment variables:
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
 - `CONF_FTPD_BANNER` - custom banner (default `Welcome Alpine ftp server https://hub.docker.com/r/delfer/alpine-ftp-server/`)
 - `CONF_COMMENT_PARMS` - comment a parm if existing in the vsftp.conf file
-  - format `parm1 parm2`
+  - format `parm1,parm2`
 - `CONF_UNCOMMENT_PARMS` - uncomment a parm if existing in the vsftp.conf file
-  - format `parm1 parm2`
+  - format `parm1,parm2`
 - `CONF_SET_PARMS` - set specific parameters in the vsftp.conf file - overwrite existing ones
   - format `parm1=value1,parm2=value2`
 
