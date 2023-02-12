@@ -47,6 +47,7 @@ docker run -it --rm \
 docker run -d \
     --name ftp \
     -p 21:21 \
+    -v /etc/letsencrypt:/etc/letsencrypt:ro \
     -p 21000-21010:21000-21010 \
     -e USERS="one|1234" \
     -e ADDRESS=ftp.site.domain \
