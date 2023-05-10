@@ -42,7 +42,7 @@ docker run -it --rm \
     --standalone \
     --preferred-challenges http \
     -n --agree-tos \
-    --email i@delfer.ru 
+    --email i@delfer.ru \
     -d ftp.site.domain
 docker run -d \
     --name ftp \
