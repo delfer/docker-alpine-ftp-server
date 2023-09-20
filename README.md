@@ -48,6 +48,7 @@ docker run -d \
     --name ftp \
     -p 21:21 \
     -p 21000-21010:21000-21010 \
+    -v "/etc/letsencrypt:/etc/letsencrypt:ro" \
     -e USERS="one|1234" \
     -e ADDRESS=ftp.site.domain \
     -e TLS_CERT="/etc/letsencrypt/live/ftp.site.domain/fullchain.pem" \
