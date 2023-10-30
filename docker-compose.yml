@@ -1,0 +1,27 @@
+services:
+  ftps:
+    image: delfer/alpine-ftp-server
+    environment:
+      - CONF_FTPD_BANNER=ACME ftps server
+      - CONF_SET_PARMS=chroot_local_user=YES,chroot_list_enable=YES,allow_writeable_chroot=YES,chroot_list_file=/etc/vsftpd.chroot_list,max_login_fails=3,max_per_ip=3,max_clients=10
+      - USERS=user1|password1 user2|password2
+      - ADDRESS=ftps.acme.com
+      - TLS_CERT=/etc/letsencrypt/live/ftps.acme.com/fullchain.pem
+      - TLS_KEY=/etc/letsencrypt/live/ftps.acme.com/privkey.pem
+    cap_add:
+      - CAP_NET_BIND_SERVICE
+    deploy:
+      replicas: 1
+    expose:
+      - "21"
+      - "21000-21010:21000-21010"
+    ports:
+      - "21:21"
+      - "21000-21010:21000-21010"
+    volumes:
+      - ftps_ftp:/ftp
+      - $PWD/vsftpd.chroot_list:/etc/vsftpd.chroot_list
+      - $PWD/letsencrypt/live/ftps.acme.com:/etc/letsencrypt/live/ftps.acme.com:ro
+volumes:
+    ftps_ftp:
+
