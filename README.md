@@ -5,7 +5,7 @@ Small and flexible docker image with vsftpd server
 ## Usage
 ```
 docker run -d \
-    -p 21:21 \
+    -p "21:21" \
     -p 21000-21010:21000-21010 \
     -e USERS="one|1234" \
     -e ADDRESS=ftp.site.domain \
@@ -46,7 +46,7 @@ docker run -it --rm \
     -d ftp.site.domain
 docker run -d \
     --name ftp \
-    -p 21:21 \
+    -p "21:21" \
     -p 21000-21010:21000-21010 \
     -v "/etc/letsencrypt:/etc/letsencrypt:ro" \
     -e USERS="one|1234" \
@@ -59,3 +59,19 @@ docker run -d \
 - Do not forget to replace ftp.site.domain with actual domain pointing to your server's IP.
 - Be sure you have avalible port 80 for standalone mode of certbot to issue certificate.
 - Do not forget to renew certificate in 3 month with `certbot renew` command.
+
+## Via docker-compose
+```
+alpine-ftp-server:
+  image: delfer/alpine-ftp-server
+  ports:
+    - "21:21"
+    - 21000-21010:21000-21010
+  environment:
+    - USERS="one|1234"
+    - ADDRESS=ftp.site.domain
+  volumes:
+    - ...
+```
+- If translating the docker run commands to docker-compose files (which uses YAML format), note that YAML parses numbers in
+  the format xx:yy as a base-60 value if the number is less than 60, so 21:21 must be specified as a quoted string
