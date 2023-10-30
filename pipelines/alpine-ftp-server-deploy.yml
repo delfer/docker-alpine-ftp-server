@@ -1,0 +1,40 @@
+trigger:
+  branches:
+    include:
+    - refs/heads/master
+
+pr: none
+
+variables:
+  dockerRegistryServiceConnection: 'Docker Registry (STENN)'
+  imageRepository: 'alpine-ftp-server'
+  containerRegistry: 'stenn.azurecr.io'
+  dockerfilePath: './Dockerfile'
+  buildContext: '.'
+  vmImageName: 'ubuntu-latest'
+
+jobs:
+- job: alpine_ftp_server
+  displayName: Building alpine-ftp-server
+  pool:
+    vmImage: $(vmImageName)
+  steps:
+  - task: Docker@2
+    displayName: Docker Build
+    inputs:
+      command: build
+      containerRegistry: | 
+        $(dockerRegistryServiceConnection)
+      repository: $(imageRepository)
+      dockerfile: $(dockerfilePath)
+      buildContext: $(buildContext)
+      arguments: '--build-arg TAG=latest-chrooted'
+      tags: latest-chrooted
+  - task: Docker@2
+    displayName: Docker Push
+    inputs:
+      command: push
+      containerRegistry: | 
+        $(dockerRegistryServiceConnection)
+      repository: $(imageRepository)
+      tags: latest-chrooted
