@@ -1,4 +1,4 @@
-ARG BASE_IMG=alpine:3.15
+ARG BASE_IMG=alpine:3.19
 
 FROM $BASE_IMG AS pidproxy
 
