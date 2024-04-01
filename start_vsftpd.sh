@@ -50,7 +50,7 @@ for i in $USERS ; do
   fi
 
   echo -e "$PASS\n$PASS" | adduser -h $FOLDER -s /sbin/nologin $UID_OPT $GROUP_OPT $NAME
-  mkdir -p $FOLDER
+  mkdir -m 750 -p $FOLDER
   chown $NAME:$GROUP $FOLDER
   unset NAME PASS FOLDER UID GID
 done
