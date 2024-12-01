@@ -20,6 +20,7 @@ Environment variables:
 - `ADDRESS` - external address to which clients can connect for passive ports (optional, should resolve to ftp server ip address)
 - `MIN_PORT` - minimum port number to be used for passive connections (optional, default `21000`)
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
+- `CONF_<PARM>` - custom parameter in configuration file, <PARM> may be UPPER or lower case
 
 ## USERS examples
 
@@ -28,6 +29,17 @@ Environment variables:
 - `user|password|/home/user/dir|10000|10000`
 - `user|password||10000`
 - `user|password||10000|82` : add to an existing group (www-data)
+
+## CONF examples
+
+- `CONF_FTPD_BANNER`: `My ftps server`
+- `CONF_CHROOT_LOCAL_USER`: `YES`
+- `CONF_chroot_list_enable`: `YES`
+- `CONF_allow_writeable_chroot`: `YES`
+- `CONF_chroot_list_file`: `/etc/vsftpd.chroot_list`
+- `CONF_max_login_fails`: `3`
+- `CONF_max_per_ip`: `3`
+- `CONF_max_clients`: `10`
 
 ## FTPS (File Transfer Protocol + SSL) Example
 
@@ -61,6 +73,7 @@ docker run -d \
 - Do not forget to renew certificate in 3 month with `certbot renew` command.
 
 ## Via docker-compose
+
 ```
 alpine-ftp-server:
   image: delfer/alpine-ftp-server
@@ -68,6 +81,11 @@ alpine-ftp-server:
     - "21:21"
     - 21000-21010:21000-21010
   environment:
+    - CONF_FTPD_BANNER="My ftps server"
+    - CONF_CHROOT_LOCAL_USER=YES
+    - CONF_chroot_list_enable=YES
+    - CONF_allow_writeable_chroot=YES
+    - CONF_chroot_list_file=/etc/vsftpd.chroot_list
     - USERS="one|1234"
     - ADDRESS=ftp.site.domain
   volumes:
