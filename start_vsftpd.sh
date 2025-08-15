@@ -1,5 +1,29 @@
 #!/bin/sh
 
+# usage: file_env VAR [DEFAULT]
+#    ie: file_env 'XYZ_DB_PASSWORD' 'example'
+# (will allow for "$XYZ_DB_PASSWORD_FILE" to fill in the value of
+#  "$XYZ_DB_PASSWORD" from a file, especially for Docker's secrets feature)
+file_env() {
+	local var="$1"
+	local fileVar="${var}_FILE"
+	local def="${2:-}"
+	local varValue=$(env | grep -E "^${var}=" | sed -E -e "s/^${var}=//")
+	local fileVarValue=$(env | grep -E "^${fileVar}=" | sed -E -e "s/^${fileVar}=//")
+	if [ -n "${varValue}" ] && [ -n "${fileVarValue}" ]; then
+		echo >&2 "error: both $var and $fileVar are set (but are exclusive)"
+		exit 1
+	fi
+	if [ -n "${varValue}" ]; then
+		export "$var"="${varValue}"
+	elif [ -n "${fileVarValue}" ]; then
+		export "$var"="$(cat "${fileVarValue}")"
+	elif [ -n "${def}" ]; then
+		export "$var"="$def"
+	fi
+	unset "$fileVar"
+}
+
 #Remove all ftp users
 grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -r -n1 deluser
 
@@ -16,9 +40,7 @@ grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -r -n1 deluser
 
 #Default user 'ftp' with password 'alpineftp'
 
-if [ -z "$USERS" ]; then
-  USERS="alpineftp|alpineftp"
-fi
+file_env 'USERS' 'alpineftp|alpineftp'
 
 for i in $USERS ; do
   NAME=$(echo $i | cut -d'|' -f1)
