@@ -1,0 +1,416 @@
+{
+  "reviewed_on": "2026-11-12",
+  "scope": "Ad hoc research probes only; not the planned automated suite.",
+  "commit": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+  "server_image_id": "sha256:f14bff95c3b17d9ffa16d3e409b08f5fd6e80eb15bfafef912aaed6c7165e542",
+  "client_image_digest": [
+    "python@sha256:c5ba3deef00c7758561a0f03c26f44f10589263d40e732b8748e0d1f38f6dd89"
+  ],
+  "kernel": "6.18.57",
+  "architecture": "x86_64",
+  "docker_version": "29.9.2",
+  "source_sha256": {
+    "Dockerfile": "5ae3dd4fd543d78a73204c9c9cc896b9ff659349d887fe620a34fc8804de9b6f",
+    "start_vsftpd.sh": "4bba3d68c92fabbec8c1045932b838f8ea376ed733001d3a428b03d5f1ad43ee",
+    "vsftpd.conf": "9bd3f81bdc6f2074d4a83e2584f16b08b94d6d819a0c3b7e511b7ae05ebb1584"
+  },
+  "build": "passed; original source, temporary BuildKit proxy CA trust only",
+  "packages": {
+    "alpine": "3.19.7",
+    "vsftpd": "3.0.5-r2",
+    "tini": "0.19.0-r2"
+  },
+  "client_versions": "3.12.16 (main, Nov  5 2026, 19:26:55) [GCC 15.2.0]\nOpenSSL 3.5.9 29 Sep 2026",
+  "payload": {
+    "size_bytes": 4352,
+    "construction": "bytes(range(256))*17",
+    "sha256": "4043ab3659cd61351795c186762a045221774893a97dcc74f6ba3deade65ac03"
+  },
+  "mode_probes": [
+    {
+      "transport": "plain",
+      "method": "PASV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "PASV",
+        "STOR",
+        "TYPE",
+        "PASV",
+        "RETR",
+        "TYPE",
+        "PASV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "plain",
+      "method": "EPSV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPSV",
+        "STOR",
+        "TYPE",
+        "EPSV",
+        "RETR",
+        "TYPE",
+        "EPSV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "plain",
+      "method": "PORT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "PORT",
+        "STOR",
+        "TYPE",
+        "PORT",
+        "RETR",
+        "TYPE",
+        "PORT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "plain",
+      "method": "EPRT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "USER",
+        "PASS",
+        "TYPE",
+        "EPRT",
+        "STOR",
+        "TYPE",
+        "EPRT",
+        "RETR",
+        "TYPE",
+        "EPRT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.2",
+      "method": "PASV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "PASV",
+        "STOR",
+        "TYPE",
+        "PASV",
+        "RETR",
+        "TYPE",
+        "PASV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.2",
+      "method": "EPSV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "EPSV",
+        "STOR",
+        "TYPE",
+        "EPSV",
+        "RETR",
+        "TYPE",
+        "EPSV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.2",
+      "method": "PORT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "PORT",
+        "STOR",
+        "TYPE",
+        "PORT",
+        "RETR",
+        "TYPE",
+        "PORT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.2",
+      "method": "EPRT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "EPRT",
+        "STOR",
+        "TYPE",
+        "EPRT",
+        "RETR",
+        "TYPE",
+        "EPRT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "version-probe": "TLSv1",
+      "accepted": false,
+      "error": "SSLError(1, '[SSL: TLSV1_ALERT_PROTOCOL_VERSION] tlsv1 alert protocol version (_ssl.c:1011)')"
+    },
+    {
+      "version-probe": "TLSv1_1",
+      "accepted": false,
+      "error": "SSLError(1, '[SSL: TLSV1_ALERT_PROTOCOL_VERSION] tlsv1 alert protocol version (_ssl.c:1011)')"
+    },
+    {
+      "version-probe": "TLSv1_2",
+      "accepted": true,
+      "negotiated": "TLSv1.2"
+    },
+    {
+      "version-probe": "TLSv1_3",
+      "accepted": true,
+      "negotiated": "TLSv1.3"
+    },
+    {
+      "probe": "no-session-reuse",
+      "context": "TLS1.2",
+      "result": "error_perm('522 SSL connection failed: session reuse required')"
+    },
+    {
+      "transport": "TLSv1.3",
+      "method": "PASV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "PASV",
+        "STOR",
+        "TYPE",
+        "PASV",
+        "RETR",
+        "TYPE",
+        "PASV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.3",
+      "method": "EPSV",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "EPSV",
+        "STOR",
+        "TYPE",
+        "EPSV",
+        "RETR",
+        "TYPE",
+        "EPSV",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.3",
+      "method": "PORT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "PORT",
+        "STOR",
+        "TYPE",
+        "PORT",
+        "RETR",
+        "TYPE",
+        "PORT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "transport": "TLSv1.3",
+      "method": "EPRT",
+      "byte_equality": true,
+      "nlst_contains_file": true,
+      "commands": [
+        "AUTH",
+        "USER",
+        "PASS",
+        "PBSZ",
+        "PROT",
+        "TYPE",
+        "EPRT",
+        "STOR",
+        "TYPE",
+        "EPRT",
+        "RETR",
+        "TYPE",
+        "EPRT",
+        "NLST",
+        "DELE",
+        "QUIT"
+      ],
+      "error": null
+    },
+    {
+      "probe": "no-session-reuse",
+      "context": "TLS1.3",
+      "result": "error_perm('522 SSL connection failed: session reuse required')"
+    }
+  ],
+  "observations": [
+    {
+      "probe": "mixed-explicit-auto",
+      "input_roles": "first UID10000/GID10000; second no UID/GID",
+      "first_account_exists": true,
+      "second_account_exists": false,
+      "second_home_owner_uid": 0,
+      "diagnostic": "adduser: uid 10000 in use; chown unknown second:second",
+      "baseline": "known defect; UID_OPT/GROUP_OPT not unset"
+    },
+    {
+      "probe": "gid-without-uid",
+      "requested_gid": 82,
+      "actual_uid": 1000,
+      "actual_gid": 1000,
+      "baseline": "GID ignored without UID branch"
+    },
+    {
+      "probe": "two-auto-homes",
+      "alice_home_mode": "0750",
+      "bob_home_mode": "02755",
+      "baseline": "fresh /ftp parent initially absent"
+    },
+    {
+      "probe": "custom-home-existing-parent",
+      "home": "/home/alice",
+      "mode": "02755",
+      "baseline": "adduser created home before mkdir -m750 -p"
+    },
+    {
+      "probe": "early-startup-connection",
+      "observed": "one TLS container stopped after early banner connection/close; process has died, quitting; next client could not resolve removed network alias",
+      "exit_code": null,
+      "causality": "wrong monitor PID is a hypothesis, not proven in this run",
+      "repeated_stress_executed": false
+    },
+    {
+      "probe": "default-no-chroot",
+      "pwd": "/",
+      "world_readable_test_marker_outside_home_read": true
+    },
+    {
+      "probe": "custom-home-restart-first-probe",
+      "result": "connection refused after restart and three-second delay",
+      "logs_captured": false,
+      "container_removed": true,
+      "note": "One failed connection; stable-ready/pid/log follow-up is a separate probe. No claim of proven cause."
+    },
+    {
+      "probe": "custom-home-restart-follow-up",
+      "first_login": "passed",
+      "restart_login": "passed",
+      "state": "running",
+      "user_in_use_warning": true,
+      "process_died": false,
+      "note": "Separate single launch; no password-change probe; earlier refused connection remains recorded."
+    }
+  ],
+  "not_executed": [
+    "full 508-combination products",
+    "100-start stress",
+    "ARM runtime",
+    "FXP",
+    "router/firewall fault suite",
+    "GUI and Java clients",
+    "complete 341-case catalogue"
+  ]
+}
