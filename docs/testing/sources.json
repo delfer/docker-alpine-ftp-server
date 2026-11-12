@@ -1,0 +1,1863 @@
+{
+  "reviewed_on": "2026-11-12",
+  "repository": "https://github.com/delfer/docker-alpine-ftp-server",
+  "commit": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+  "sources": [
+    {
+      "number": 1,
+      "kind": "pr",
+      "title": "fixed usage examples and typo in README",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/1",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "63223ddd34142f023a92eba3f7f1e650d7d5e2fd",
+      "base_sha": "03c19b1b8ad2d4703849eeec71ec6ce53e7cb8d4",
+      "merge_commit_sha": "67b445435717f63e08f9383ec2ecad07bc3f191f",
+      "updated_at": "2018-11-04T14:59:45Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/1#issuecomment-435676604"
+      ],
+      "test_case_ids": [
+        "DOC-001"
+      ]
+    },
+    {
+      "number": 2,
+      "kind": "pr",
+      "title": "Fix grep in start script",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/2",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "79ea81995d1a5a6fe235d34f8664a8e83bf75f09",
+      "base_sha": "67b445435717f63e08f9383ec2ecad07bc3f191f",
+      "merge_commit_sha": "b26ba20ef45e5473d97df39e8ff97294c53b2db5",
+      "updated_at": "2019-11-04T19:24:04Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/2#issuecomment-464005930",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/2#issuecomment-549508026"
+      ],
+      "test_case_ids": [
+        "USR-026",
+        "USR-028"
+      ]
+    },
+    {
+      "number": 3,
+      "kind": "pr",
+      "title": "Fix shebang on `start_vsftpd.sh`",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/3",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "c0b90286a6064dc692479205c0248798c6b2b216",
+      "base_sha": "67b445435717f63e08f9383ec2ecad07bc3f191f",
+      "merge_commit_sha": "8c725a36c93631def79a9bbbbef6b3a37366ad86",
+      "updated_at": "2019-02-26T14:32:40Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/3#issuecomment-467460485"
+      ],
+      "test_case_ids": [
+        "BLD-001",
+        "BLD-002",
+        "LIFE-020"
+      ]
+    },
+    {
+      "number": 4,
+      "kind": "issue",
+      "title": "500 OOPS: invalid pasv_address",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/4",
+      "state": "closed",
+      "updated_at": "2019-11-28T19:12:37Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/4#issuecomment-549506727",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/4#issuecomment-559586782"
+      ],
+      "test_case_ids": [
+        "NET-008",
+        "NET-009",
+        "NET-010",
+        "NET-011",
+        "NET-012",
+        "CFG-011",
+        "COMPAT-002"
+      ]
+    },
+    {
+      "number": 5,
+      "kind": "pr",
+      "title": "Update vsftpd.conf",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/5",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "d4e3e1a38efff0264adaade23375bdc17e5e062e",
+      "base_sha": "8c725a36c93631def79a9bbbbef6b3a37366ad86",
+      "merge_commit_sha": "72ff38aea89a0ef6443ef2e4667402cb02c23d7b",
+      "updated_at": "2019-11-28T19:11:41Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/5#issuecomment-549506649",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/5#issuecomment-559586445"
+      ],
+      "test_case_ids": [
+        "NET-009",
+        "NET-010",
+        "CFG-011"
+      ]
+    },
+    {
+      "number": 6,
+      "kind": "issue",
+      "title": "Error : Could not retrieve directory listing",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/6",
+      "state": "closed",
+      "updated_at": "2019-11-28T18:25:14Z",
+      "discussion_count": 6,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-549506977",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-549530752",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-549860799",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-550357680",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-550872302",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/6#issuecomment-559579045"
+      ],
+      "test_case_ids": [
+        "DATA-001",
+        "DATA-017",
+        "NET-008",
+        "NET-014",
+        "NET-017",
+        "COMPAT-001",
+        "FAIL-003",
+        "FAIL-004"
+      ]
+    },
+    {
+      "number": 7,
+      "kind": "pr",
+      "title": "switch to background=No",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/7",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "d1f3c0058e022559a04f37af3aa0ecd4ee689574",
+      "base_sha": "8c725a36c93631def79a9bbbbef6b3a37366ad86",
+      "merge_commit_sha": "757c5d4531cdc3a0fd90799fdea7e7ef91736bfa",
+      "updated_at": "2019-11-28T19:05:39Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/7#issuecomment-559585594",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/7#pullrequestreview-313513241"
+      ],
+      "test_case_ids": [
+        "CFG-012",
+        "OBS-001"
+      ]
+    },
+    {
+      "number": 8,
+      "kind": "issue",
+      "title": "user passwords reset after container restart",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/8",
+      "state": "closed",
+      "updated_at": "2019-12-03T09:39:23Z",
+      "discussion_count": 4,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/8#issuecomment-559576320",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/8#issuecomment-559605378",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/8#issuecomment-559608465",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/8#issuecomment-561081941"
+      ],
+      "test_case_ids": [
+        "AUTH-008",
+        "FS-026",
+        "LIFE-006",
+        "LIFE-008",
+        "LIFE-009"
+      ]
+    },
+    {
+      "number": 9,
+      "kind": "issue",
+      "title": "passive ports in control connection do not match configuration",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/9",
+      "state": "closed",
+      "updated_at": "2020-01-24T07:11:35Z",
+      "discussion_count": 4,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/9#issuecomment-559578912",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/9#issuecomment-559611221",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/9#issuecomment-561082802",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/9#issuecomment-578017971"
+      ],
+      "test_case_ids": [
+        "NET-001",
+        "NET-014",
+        "NET-019",
+        "NET-022"
+      ]
+    },
+    {
+      "number": 10,
+      "kind": "issue",
+      "title": "Multi-arch build",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/10",
+      "state": "closed",
+      "updated_at": "2020-08-27T20:05:57Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/10#issuecomment-681962649",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/10#issuecomment-682164164"
+      ],
+      "test_case_ids": [
+        "BLD-011",
+        "BLD-012",
+        "CI-005"
+      ]
+    },
+    {
+      "number": 11,
+      "kind": "issue",
+      "title": "Bug - Stops without any error",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/11",
+      "state": "closed",
+      "updated_at": "2020-05-06T13:10:56Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/11#issuecomment-624639937"
+      ],
+      "test_case_ids": [
+        "NET-013",
+        "LIFE-001",
+        "OBS-004",
+        "OBS-005",
+        "FUT-013"
+      ]
+    },
+    {
+      "number": 12,
+      "kind": "pr",
+      "title": "Language and formatting",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/12",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "ed56f1fad3b51168a5f505a38e887afeb0ea0056",
+      "base_sha": "72ff38aea89a0ef6443ef2e4667402cb02c23d7b",
+      "merge_commit_sha": "8cc82e3b0f2419da2f78ce96502fb638c64ac8e7",
+      "updated_at": "2020-08-27T13:51:16Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/12#issuecomment-625155735",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/12#issuecomment-681961695"
+      ],
+      "test_case_ids": [
+        "DOC-001"
+      ]
+    },
+    {
+      "number": 13,
+      "kind": "issue",
+      "title": "Delete ftp users method is correct?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/13",
+      "state": "closed",
+      "updated_at": "2020-05-27T09:14:38Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/13#issuecomment-634226171",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/13#issuecomment-634535081"
+      ],
+      "test_case_ids": [
+        "USR-020",
+        "USR-026",
+        "USR-027",
+        "USR-028",
+        "LIFE-006"
+      ]
+    },
+    {
+      "number": 14,
+      "kind": "issue",
+      "title": "How to use docker-compose.yml ?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/14",
+      "state": "closed",
+      "updated_at": "2024-04-15T23:35:51Z",
+      "discussion_count": 4,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/14#issuecomment-719331122",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/14#issuecomment-763991656",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/14#issuecomment-804812878",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/14#issuecomment-2057985471"
+      ],
+      "test_case_ids": [
+        "USR-012",
+        "USR-016",
+        "DOC-003",
+        "DOC-004",
+        "DOC-005"
+      ]
+    },
+    {
+      "number": 15,
+      "kind": "issue",
+      "title": "docker image stops when ftp client quits",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/15",
+      "state": "closed",
+      "updated_at": "2022-03-31T13:55:57Z",
+      "discussion_count": 10,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-752172412",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-752177079",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-752180617",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-752190778",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-763998285",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-764022000",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-764441362",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-804796058",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-805347953",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/15#issuecomment-1084622951"
+      ],
+      "test_case_ids": [
+        "AUTH-013",
+        "LIFE-002",
+        "LIFE-003",
+        "LIFE-015",
+        "PAR-009",
+        "FAIL-005"
+      ]
+    },
+    {
+      "number": 16,
+      "kind": "issue",
+      "title": "docker-alpine-ftp-server delays the termination of my services",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/16",
+      "state": "closed",
+      "updated_at": "2021-03-26T13:36:42Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/16#issuecomment-804810820",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/16#issuecomment-805439994",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/16#issuecomment-805469071"
+      ],
+      "test_case_ids": [
+        "LIFE-011",
+        "LIFE-012"
+      ]
+    },
+    {
+      "number": 17,
+      "kind": "issue",
+      "title": "Can i use this server with sftp?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/17",
+      "state": "closed",
+      "updated_at": "2022-06-22T12:11:06Z",
+      "discussion_count": 4,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/17#issuecomment-758204012",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/17#issuecomment-804810226",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/17#issuecomment-805280965",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/17#issuecomment-1163019870"
+      ],
+      "test_case_ids": [
+        "AUTH-004",
+        "TLS-032",
+        "DOC-012"
+      ]
+    },
+    {
+      "number": 18,
+      "kind": "pr",
+      "title": "Update Alpine from 3.10 to 3.13.",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/18",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "706c399c35b9b9af5f8af37c9c6c58f9ba9880f0",
+      "base_sha": "8cc82e3b0f2419da2f78ce96502fb638c64ac8e7",
+      "merge_commit_sha": "94d91b13f34ec6b14b6ba14a0a36b0b6b88e87f8",
+      "updated_at": "2021-01-16T20:43:24Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/18#issuecomment-761640904"
+      ],
+      "test_case_ids": [
+        "BLD-001"
+      ]
+    },
+    {
+      "number": 19,
+      "kind": "issue",
+      "title": "how to prevent ftp user to go to parent directory?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/19",
+      "state": "open",
+      "updated_at": "2025-10-25T11:20:39Z",
+      "discussion_count": 10,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-790657621",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-801185638",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-804809651",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-1063154759",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-1161951202",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-1176268591",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-1365862998",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-2028936168",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-2814215039",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/19#issuecomment-3446568039"
+      ],
+      "test_case_ids": [
+        "DATA-026",
+        "FS-004",
+        "FS-006",
+        "FS-007",
+        "FS-009",
+        "FS-011",
+        "CFG-001",
+        "CFG-014",
+        "FUT-012"
+      ]
+    },
+    {
+      "number": 20,
+      "kind": "pr",
+      "title": "Automated multi-arch build via github actions",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/20",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "a8ccd7061a92f48a1c086ce12b800de637a44b0b",
+      "base_sha": "94d91b13f34ec6b14b6ba14a0a36b0b6b88e87f8",
+      "merge_commit_sha": "f8ca6e74ffce6dacc0856fcde79c898c5ee9846a",
+      "updated_at": "2022-02-25T08:00:21Z",
+      "discussion_count": 7,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-786616857",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-801169847",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-996557095",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-1004918424",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-1005126088",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-1050579708",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/20#issuecomment-1050621012"
+      ],
+      "test_case_ids": [
+        "BLD-001",
+        "BLD-010",
+        "BLD-011",
+        "BLD-012",
+        "BLD-013",
+        "CI-001",
+        "CI-002",
+        "CI-003",
+        "CI-004",
+        "CI-005",
+        "CI-008"
+      ]
+    },
+    {
+      "number": 21,
+      "kind": "issue",
+      "title": "Group id for Users",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/21",
+      "state": "closed",
+      "updated_at": "2021-12-09T16:49:05Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/21#issuecomment-804809294"
+      ],
+      "test_case_ids": [
+        "USR-007",
+        "GRP-001",
+        "GRP-010",
+        "FS-005",
+        "FS-012",
+        "FS-013",
+        "FS-028",
+        "DOC-010"
+      ]
+    },
+    {
+      "number": 22,
+      "kind": "pr",
+      "title": "add default chroot security",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/22",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "31ad370506fc2229541e9952d6e5801c30e2ccc7",
+      "base_sha": "94d91b13f34ec6b14b6ba14a0a36b0b6b88e87f8",
+      "merge_commit_sha": "1ec7550f77ad188204bbed4fe7fe9bb032de0faa",
+      "updated_at": "2021-03-23T10:55:34Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/22#issuecomment-801167773",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/22#issuecomment-804807448"
+      ],
+      "test_case_ids": [
+        "FS-006",
+        "FS-007"
+      ]
+    },
+    {
+      "number": 23,
+      "kind": "issue",
+      "title": "Error 553 after last merge",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/23",
+      "state": "closed",
+      "updated_at": "2021-03-23T10:58:30Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/23#issuecomment-804807932",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/23#issuecomment-804809350"
+      ],
+      "test_case_ids": [
+        "DATA-013",
+        "DATA-016",
+        "DATA-025",
+        "FS-008",
+        "CI-006",
+        "COMPAT-004",
+        "FUT-014"
+      ]
+    },
+    {
+      "number": 24,
+      "kind": "pr",
+      "title": "Revert \"add default chroot security\"",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/24",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "501ccfff5e16209844a7e49a00a9fcf79dbb41bf",
+      "base_sha": "1ec7550f77ad188204bbed4fe7fe9bb032de0faa",
+      "merge_commit_sha": "3eed646b9fc63ec2161163af339d7bcf00e093df",
+      "updated_at": "2021-03-23T10:54:37Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "FS-006",
+        "FS-007"
+      ]
+    },
+    {
+      "number": 25,
+      "kind": "pr",
+      "title": "Use SIGKILL to stop vsftpd",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/25",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "62629f3c68abd890c1a95a7dc8bc5d29613f0f06",
+      "base_sha": "3eed646b9fc63ec2161163af339d7bcf00e093df",
+      "merge_commit_sha": "d7d630b5278ca730dfff3b068506cfe1da2d52fb",
+      "updated_at": "2021-03-24T04:00:38Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/25#issuecomment-805468706"
+      ],
+      "test_case_ids": [
+        "LIFE-011"
+      ]
+    },
+    {
+      "number": 26,
+      "kind": "issue",
+      "title": "Container is not starting",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/26",
+      "state": "closed",
+      "updated_at": "2021-05-09T22:50:13Z",
+      "discussion_count": 9,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835858374",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835862939",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835864829",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835865139",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835867736",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835887369",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835904377",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835906476",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/26#issuecomment-835919243"
+      ],
+      "test_case_ids": [
+        "USR-010",
+        "NET-013",
+        "LIFE-001"
+      ]
+    },
+    {
+      "number": 27,
+      "kind": "pr",
+      "title": "add note about address env",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/27",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "5f694e9d9625f6eeb539a2478c0a35ca68f4bbfb",
+      "base_sha": "d7d630b5278ca730dfff3b068506cfe1da2d52fb",
+      "merge_commit_sha": "ec6a6b95b5ffa5a2c415622a20b9b8c0c060a7d0",
+      "updated_at": "2022-02-25T10:24:28Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/27#issuecomment-1050577710"
+      ],
+      "test_case_ids": [
+        "NET-010",
+        "DOC-001"
+      ]
+    },
+    {
+      "number": 28,
+      "kind": "issue",
+      "title": "Passive port is not listening",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/28",
+      "state": "closed",
+      "updated_at": "2022-03-31T16:32:30Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/28#issuecomment-1084821659",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/28#issuecomment-1084821946"
+      ],
+      "test_case_ids": [
+        "NET-001",
+        "NET-020"
+      ]
+    },
+    {
+      "number": 29,
+      "kind": "issue",
+      "title": "Ports not mapping, documentation beneficial.",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/29",
+      "state": "closed",
+      "updated_at": "2023-11-08T09:31:48Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/29#issuecomment-1785798003",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/29#issuecomment-1801411507"
+      ],
+      "test_case_ids": [
+        "DOC-006"
+      ]
+    },
+    {
+      "number": 30,
+      "kind": "issue",
+      "title": "how can i change or add the username and password",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/30",
+      "state": "closed",
+      "updated_at": "2022-03-31T16:22:21Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/30#issuecomment-968588002",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/30#issuecomment-1084811547"
+      ],
+      "test_case_ids": [
+        "USR-001",
+        "USR-002",
+        "USR-003",
+        "AUTH-001",
+        "LIFE-009",
+        "LIFE-010"
+      ]
+    },
+    {
+      "number": 31,
+      "kind": "issue",
+      "title": "`adduser: uid '82' in use`",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/31",
+      "state": "closed",
+      "updated_at": "2022-03-31T16:20:30Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/31#issuecomment-1084723542",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/31#issuecomment-1084809703"
+      ],
+      "test_case_ids": [
+        "USR-006",
+        "GRP-004",
+        "GRP-005",
+        "GRP-011",
+        "GRP-012",
+        "FS-019",
+        "DOC-010"
+      ]
+    },
+    {
+      "number": 32,
+      "kind": "issue",
+      "title": "ls command returns 500 Bad EPRT protocol. ftp: bind: Address already in use",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/32",
+      "state": "closed",
+      "updated_at": "2023-10-30T18:17:12Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/32#issuecomment-1084721863"
+      ],
+      "test_case_ids": [
+        "AUTH-011",
+        "MODE-001",
+        "MODE-004",
+        "MODE-007",
+        "MODE-012",
+        "MODE-013",
+        "MODE-015",
+        "MODE-016",
+        "NET-025",
+        "FAIL-003",
+        "FAIL-009"
+      ]
+    },
+    {
+      "number": 33,
+      "kind": "issue",
+      "title": "How to set local timezome?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/33",
+      "state": "closed",
+      "updated_at": "2022-03-19T08:12:33Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/33#issuecomment-1072951485",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/33#issuecomment-1072966270"
+      ],
+      "test_case_ids": [
+        "DATA-027",
+        "CFG-007",
+        "CFG-008",
+        "DOC-012",
+        "FUT-011"
+      ]
+    },
+    {
+      "number": 34,
+      "kind": "issue",
+      "title": "Can't deploying multiple users ",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/34",
+      "state": "closed",
+      "updated_at": "2022-03-22T23:18:03Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/34#issuecomment-1075742283"
+      ],
+      "test_case_ids": [
+        "USR-004",
+        "USR-009",
+        "USR-011",
+        "USR-017",
+        "USR-024",
+        "GRP-009",
+        "DOC-009",
+        "PAR-002"
+      ]
+    },
+    {
+      "number": 35,
+      "kind": "issue",
+      "title": "How do I map a volume on the Docker host?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/35",
+      "state": "closed",
+      "updated_at": "2022-03-31T15:03:01Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/35#issuecomment-1084715980",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/35#issuecomment-1084716204"
+      ],
+      "test_case_ids": [
+        "USR-005",
+        "FS-014",
+        "FS-015",
+        "DOC-011"
+      ]
+    },
+    {
+      "number": 36,
+      "kind": "pr",
+      "title": "Fix container stop on disconnect",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/36",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "fbf9afd9368d63a225e093bae227fa878de46b2c",
+      "base_sha": "ea9b4669ad28bbf4c81b9d1244284db2368abcb2",
+      "merge_commit_sha": "f8cc27198e8f0c8ac140275d1f92fff74d0aeddb",
+      "updated_at": "2022-03-31T13:55:27Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "BLD-001",
+        "BLD-004",
+        "BLD-006",
+        "BLD-007",
+        "BLD-014",
+        "AUTH-013",
+        "LIFE-001",
+        "LIFE-002",
+        "LIFE-003",
+        "LIFE-004",
+        "LIFE-006",
+        "LIFE-011",
+        "LIFE-012",
+        "LIFE-013",
+        "LIFE-014",
+        "LIFE-015",
+        "LIFE-016",
+        "LIFE-017",
+        "LIFE-018",
+        "LIFE-019",
+        "LIFE-020",
+        "CFG-012",
+        "OBS-001",
+        "PAR-009",
+        "FAIL-005"
+      ]
+    },
+    {
+      "number": 37,
+      "kind": "pr",
+      "title": "Add TLS support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/37",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "c49602bc3df08fb6ebd0a49a0fdf1d4a9082c234",
+      "base_sha": "9fd6e070ff6d49b3a0fb4c4009a3072e2f007291",
+      "merge_commit_sha": "5c4016b825a3091c287e05cd150398bb27f2e99c",
+      "updated_at": "2022-05-17T09:13:36Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/37#issuecomment-1091753947",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/37#issuecomment-1093956982"
+      ],
+      "test_case_ids": [
+        "TLS-002",
+        "FUT-001"
+      ]
+    },
+    {
+      "number": 38,
+      "kind": "issue",
+      "title": "Container dies after: \"adduser: user 'ftp_user' in use\"",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/38",
+      "state": "open",
+      "updated_at": "2026-03-04T22:11:02Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/38#issuecomment-1216392411",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/38#issuecomment-1785790559",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/38#issuecomment-4000621745"
+      ],
+      "test_case_ids": [
+        "USR-014",
+        "USR-029",
+        "LIFE-007",
+        "LIFE-008",
+        "FUT-013",
+        "FAIL-011"
+      ]
+    },
+    {
+      "number": 39,
+      "kind": "issue",
+      "title": "enable some additional features to be set by variable?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/39",
+      "state": "open",
+      "updated_at": "2023-10-30T18:16:21Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/39#issuecomment-1785793761"
+      ],
+      "test_case_ids": [
+        "AUTH-004",
+        "MODE-002",
+        "MODE-003",
+        "TLS-030",
+        "CFG-005",
+        "CFG-015",
+        "DOC-012",
+        "FUT-001",
+        "FUT-009"
+      ]
+    },
+    {
+      "number": 40,
+      "kind": "pr",
+      "title": "Added FTPS (TLS) support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/40",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "5ae3c0bce38563c908f6d16d7e384701264a92e4",
+      "base_sha": "9fd6e070ff6d49b3a0fb4c4009a3072e2f007291",
+      "merge_commit_sha": "3c61e08623849120d1d7ff526253d79a9ae0778f",
+      "updated_at": "2022-06-22T12:06:56Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "BLD-003",
+        "AUTH-015",
+        "TLS-001",
+        "TLS-002",
+        "TLS-003",
+        "TLS-004",
+        "TLS-009",
+        "TLS-012",
+        "TLS-016",
+        "TLS-020",
+        "TLS-021",
+        "TLS-022",
+        "TLS-023",
+        "TLS-024",
+        "TLS-025",
+        "TLS-033",
+        "TLS-034",
+        "DOC-002",
+        "FAIL-006"
+      ]
+    },
+    {
+      "number": 41,
+      "kind": "pr",
+      "title": "Add group support and timezone support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/41",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "8cbd576c20e0153c6c2c9483a785446e4e3ec2fc",
+      "base_sha": "bf10b150f49214331a3a199506c3ffb78df71508",
+      "merge_commit_sha": "0067b8b3fc94538afaf0acf1947d2a11505c5efa",
+      "updated_at": "2022-06-29T08:35:39Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/41#issuecomment-1169658384",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/41#issuecomment-1169682048"
+      ],
+      "test_case_ids": [
+        "CFG-008",
+        "FUT-011"
+      ]
+    },
+    {
+      "number": 42,
+      "kind": "pr",
+      "title": "Add group support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/42",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "e1314608adee3c0472a106d132747ce53833ab36",
+      "base_sha": "b2d382790e917769f5ab4d98b04455cb96ff52b0",
+      "merge_commit_sha": "bf10b150f49214331a3a199506c3ffb78df71508",
+      "updated_at": "2022-06-29T08:32:21Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/42#pullrequestreview-1022943153",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/42#issuecomment-1169686143"
+      ],
+      "test_case_ids": [
+        "USR-007",
+        "GRP-002",
+        "GRP-003",
+        "GRP-004",
+        "GRP-006",
+        "GRP-007",
+        "GRP-008",
+        "GRP-009",
+        "GRP-010",
+        "GRP-013",
+        "GRP-014",
+        "GRP-017",
+        "FS-005",
+        "FS-019",
+        "FS-025",
+        "FS-028",
+        "DOC-010",
+        "PAR-002"
+      ]
+    },
+    {
+      "number": 43,
+      "kind": "issue",
+      "title": "client connect failed",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/43",
+      "state": "open",
+      "updated_at": "2023-10-30T18:08:10Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/43#issuecomment-1785781339"
+      ],
+      "test_case_ids": [
+        "NET-013"
+      ]
+    },
+    {
+      "number": 44,
+      "kind": "pr",
+      "title": "Fix typo",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/44",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "a404b60120e39e7b63dd525ce43077f28334132b",
+      "base_sha": "bf10b150f49214331a3a199506c3ffb78df71508",
+      "merge_commit_sha": "d70ae2becebce6c3225dbee7e060fbab1bd40119",
+      "updated_at": "2022-09-12T09:49:34Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/44#pullrequestreview-1096549526",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/44#issuecomment-1243488646"
+      ],
+      "test_case_ids": [
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 45,
+      "kind": "pr",
+      "title": "Set configuration parameters by variables",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/45",
+      "state": "open",
+      "merged": false,
+      "head_sha": "01d80d8ec5bf2e1ca74392ff2cb8bf408a9b86c3",
+      "base_sha": "9fa279317254237c858abc4063fa0fd751f47ff8",
+      "merge_commit_sha": "91619e042356be0820a010c0e5847101d36e8f4b",
+      "updated_at": "2025-03-01T11:12:00Z",
+      "discussion_count": 5,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/45#issuecomment-1785743152",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/45#issuecomment-1786999675",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/45#issuecomment-1801385124",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/45#issuecomment-2510041637",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/45#issuecomment-2692151541"
+      ],
+      "test_case_ids": [
+        "AUTH-012",
+        "CFG-016",
+        "DOC-012",
+        "FUT-001",
+        "FUT-004",
+        "FUT-005",
+        "FUT-006",
+        "FUT-007",
+        "FUT-008"
+      ]
+    },
+    {
+      "number": 46,
+      "kind": "issue",
+      "title": "Cant store files when starting integration test on gitlab runner",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/46",
+      "state": "open",
+      "updated_at": "2023-10-30T18:05:58Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/46#issuecomment-1785778070"
+      ],
+      "test_case_ids": [
+        "NET-003",
+        "NET-017",
+        "NET-019",
+        "NET-023",
+        "NET-028",
+        "OBS-010",
+        "CI-007",
+        "COMPAT-004",
+        "COMPAT-007",
+        "FUT-001"
+      ]
+    },
+    {
+      "number": 47,
+      "kind": "issue",
+      "title": "default configuration does not list dot files (so called \"hidden\" files) via NLST",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/47",
+      "state": "open",
+      "updated_at": "2023-01-09T09:58:12Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/47#issuecomment-1374644764",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/47#issuecomment-1375358423"
+      ],
+      "test_case_ids": [
+        "DATA-014",
+        "DATA-019",
+        "CFG-006",
+        "COMPAT-003"
+      ]
+    },
+    {
+      "number": 48,
+      "kind": "issue",
+      "title": "container undeterministically dies directly after startup",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/48",
+      "state": "open",
+      "updated_at": "2026-09-08T12:14:38Z",
+      "discussion_count": 10,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1380187406",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1380208503",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1422928188",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1785770997",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1812452070",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-1918554226",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-3077611987",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-3195655229",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-3297567362",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/48#issuecomment-5584960701"
+      ],
+      "test_case_ids": [
+        "NET-027",
+        "NET-028",
+        "LIFE-001",
+        "LIFE-004",
+        "LIFE-005",
+        "LIFE-007",
+        "LIFE-017",
+        "OBS-005",
+        "OBS-010",
+        "CI-007",
+        "COMPAT-007",
+        "FUT-013"
+      ]
+    },
+    {
+      "number": 49,
+      "kind": "issue",
+      "title": "Process quitting on startup on RHEL7",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/49",
+      "state": "open",
+      "updated_at": "2023-11-20T09:39:19Z",
+      "discussion_count": 10,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1420493236",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1420503213",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1583139506",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1785395196",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1785712897",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1786005845",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1790864846",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1801393721",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1801904316",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/49#issuecomment-1818639498"
+      ],
+      "test_case_ids": [
+        "NET-022",
+        "NET-024",
+        "LIFE-005",
+        "LIFE-014",
+        "LIFE-025",
+        "OBS-004",
+        "OBS-005",
+        "COMPAT-008",
+        "FUT-013",
+        "FAIL-007"
+      ]
+    },
+    {
+      "number": 50,
+      "kind": "issue",
+      "title": "There is an error in the FTPS documentation",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/50",
+      "state": "closed",
+      "updated_at": "2023-10-30T17:56:02Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/50#issuecomment-1785762600"
+      ],
+      "test_case_ids": [
+        "TLS-005",
+        "TLS-011",
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 51,
+      "kind": "pr",
+      "title": "Update README.md",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/51",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "6002773450fe2d2a8a3168e4689b28c4acfb10c8",
+      "base_sha": "d70ae2becebce6c3225dbee7e060fbab1bd40119",
+      "merge_commit_sha": "f44284426a1e30dfe2302b159867765b3e4d072a",
+      "updated_at": "2023-09-20T17:01:50Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/51#issuecomment-1727690311",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/51#issuecomment-1728108415",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/51#issuecomment-1728121340"
+      ],
+      "test_case_ids": [
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 52,
+      "kind": "issue",
+      "title": "Remove TLSv1 Support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/52",
+      "state": "closed",
+      "updated_at": "2023-11-08T09:30:08Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/52#issuecomment-1785761104",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/52#issuecomment-1789041230",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/52#issuecomment-1801408276"
+      ],
+      "test_case_ids": [
+        "TLS-017",
+        "TLS-018",
+        "TLS-019"
+      ]
+    },
+    {
+      "number": 53,
+      "kind": "issue",
+      "title": "Why is there only \"latest\" tag on DockerHub?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/53",
+      "state": "open",
+      "updated_at": "2023-10-30T17:53:25Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/53#issuecomment-1785758678"
+      ],
+      "test_case_ids": [
+        "CI-006",
+        "FUT-014"
+      ]
+    },
+    {
+      "number": 54,
+      "kind": "pr",
+      "title": "Add missing backslash to command example on README",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/54",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "d35ec946cb40a6c8fcae23e2227e662350de7b4d",
+      "base_sha": "d70ae2becebce6c3225dbee7e060fbab1bd40119",
+      "merge_commit_sha": "7af645ce38f9c4fda079654b6387482bcdca9442",
+      "updated_at": "2023-05-10T17:29:19Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 55,
+      "kind": "issue",
+      "title": "Container error illegal character with code 34 at position 0",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/55",
+      "state": "closed",
+      "updated_at": "2023-05-15T09:36:10Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/55#issuecomment-1547508778"
+      ],
+      "test_case_ids": [
+        "USR-012",
+        "USR-016",
+        "DOC-005",
+        "DOC-008",
+        "DOC-009"
+      ]
+    },
+    {
+      "number": 56,
+      "kind": "issue",
+      "title": "no connection with letsencrypt cert",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/56",
+      "state": "closed",
+      "updated_at": "2023-11-08T09:31:15Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/56#issuecomment-1785751018",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/56#issuecomment-1786128029",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/56#issuecomment-1801410641"
+      ],
+      "test_case_ids": [
+        "USR-011",
+        "TLS-001",
+        "TLS-005",
+        "TLS-006",
+        "TLS-007",
+        "TLS-008",
+        "OBS-004",
+        "COMPAT-002",
+        "FUT-013"
+      ]
+    },
+    {
+      "number": 57,
+      "kind": "pr",
+      "title": "Forwarding certificate files inside the container so that FTP can use…",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/57",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "5b1dd74d280abf4ca2ddec3e2cb0440d196aaca8",
+      "base_sha": "7af645ce38f9c4fda079654b6387482bcdca9442",
+      "merge_commit_sha": "33a2af7e45aea6f9c4d17bc46e4318879be545ac",
+      "updated_at": "2023-09-21T07:15:00Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/57#issuecomment-1728986718"
+      ],
+      "test_case_ids": [
+        "TLS-005",
+        "TLS-010",
+        "TLS-011",
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 58,
+      "kind": "pr",
+      "title": "Typo fix for README.md",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/58",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "4495180f7b2666959ceee07558c8825a002b05f3",
+      "base_sha": "33a2af7e45aea6f9c4d17bc46e4318879be545ac",
+      "merge_commit_sha": "61c63a8ca41cf54aae688afd1e41be880a7dec5f",
+      "updated_at": "2023-11-07T14:58:24Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/58#issuecomment-1785714790",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/58#issuecomment-1794465232",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/58#issuecomment-1798777932"
+      ],
+      "test_case_ids": [
+        "DOC-002"
+      ]
+    },
+    {
+      "number": 59,
+      "kind": "issue",
+      "title": "what is use of volume ftp/ftp is in dockerfile?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/59",
+      "state": "open",
+      "updated_at": "2024-08-09T23:37:19Z",
+      "discussion_count": 4,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/59#issuecomment-1785747419",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/59#issuecomment-1785778737",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/59#issuecomment-1785802635",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/59#issuecomment-2278880664"
+      ],
+      "test_case_ids": [
+        "BLD-004",
+        "FS-026",
+        "FS-027"
+      ]
+    },
+    {
+      "number": 60,
+      "kind": "pr",
+      "title": "DS-905 Change root for ftp",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/60",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "dcbdb14b0ee40fdfbb8c3c84b103cd40dc1c61c8",
+      "base_sha": "33a2af7e45aea6f9c4d17bc46e4318879be545ac",
+      "merge_commit_sha": "50cc30a5566762f6f775471b7a24270682c34568",
+      "updated_at": "2023-10-30T18:23:56Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/60#issuecomment-1785805326"
+      ],
+      "test_case_ids": [
+        "FS-007"
+      ]
+    },
+    {
+      "number": 61,
+      "kind": "pr",
+      "title": "Quote port \"21:21\" throughout, add note about base-60, add compose example",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/61",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "b8c43e356f8a936a748459f5589d533440adaf90",
+      "base_sha": "61c63a8ca41cf54aae688afd1e41be880a7dec5f",
+      "merge_commit_sha": "12ed85de4f6a0f376bb33596eb858b345c0bbc34",
+      "updated_at": "2023-11-08T08:59:47Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/61#issuecomment-1801356604"
+      ],
+      "test_case_ids": [
+        "DOC-005",
+        "DOC-006",
+        "DOC-007"
+      ]
+    },
+    {
+      "number": 62,
+      "kind": "pr",
+      "title": "remove TLSv1 support",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/62",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "06bb7e29427e55b968c5f05b2ed840d4b3793fec",
+      "base_sha": "61c63a8ca41cf54aae688afd1e41be880a7dec5f",
+      "merge_commit_sha": "7ffc922f314c807d311056dcdaf5e5a400074e35",
+      "updated_at": "2023-11-08T09:00:59Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/62#issuecomment-1801358351"
+      ],
+      "test_case_ids": [
+        "TLS-017",
+        "TLS-018",
+        "TLS-019"
+      ]
+    },
+    {
+      "number": 63,
+      "kind": "issue",
+      "title": "environment seems wrong",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/63",
+      "state": "open",
+      "updated_at": "2024-09-20T14:46:11Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/63#issuecomment-2363907195"
+      ],
+      "test_case_ids": [
+        "USR-016",
+        "NET-015",
+        "DOC-003",
+        "DOC-004",
+        "DOC-005"
+      ]
+    },
+    {
+      "number": 64,
+      "kind": "issue",
+      "title": "How set read-only permission?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/64",
+      "state": "open",
+      "updated_at": "2024-11-06T17:32:23Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/64#issuecomment-1970752261",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/64#issuecomment-2460383605"
+      ],
+      "test_case_ids": [
+        "DATA-033",
+        "FS-016",
+        "CFG-003",
+        "CFG-004"
+      ]
+    },
+    {
+      "number": 65,
+      "kind": "issue",
+      "title": "mkdir: can't create directory '/ftp/admin': I/O error",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/65",
+      "state": "open",
+      "updated_at": "2024-01-09T08:47:14Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "FS-017",
+        "FS-020",
+        "FS-023"
+      ]
+    },
+    {
+      "number": 66,
+      "kind": "issue",
+      "title": "Change base image to 3.16.9",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/66",
+      "state": "closed",
+      "updated_at": "2024-01-31T12:21:28Z",
+      "discussion_count": 3,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/66#issuecomment-1917623164",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/66#issuecomment-1918634790",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/66#issuecomment-1919000991"
+      ],
+      "test_case_ids": [
+        "BLD-008",
+        "BLD-009"
+      ]
+    },
+    {
+      "number": 67,
+      "kind": "pr",
+      "title": "change alpine base image",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/67",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "2412658304696d95e5af5d62e6283d3b66fefb33",
+      "base_sha": "7ffc922f314c807d311056dcdaf5e5a400074e35",
+      "merge_commit_sha": "9fa279317254237c858abc4063fa0fd751f47ff8",
+      "updated_at": "2024-01-31T12:20:48Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/67#issuecomment-1918997883"
+      ],
+      "test_case_ids": [
+        "BLD-001",
+        "BLD-008"
+      ]
+    },
+    {
+      "number": 68,
+      "kind": "issue",
+      "title": "Random '500 OOPS: failed to open vsftpd log file:/proc/1/fd/1'",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/68",
+      "state": "closed",
+      "updated_at": "2024-02-07T11:16:57Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/68#issuecomment-1931826927"
+      ],
+      "test_case_ids": [
+        "DATA-034",
+        "MODE-011",
+        "NET-021",
+        "LIFE-019",
+        "LIFE-026",
+        "CFG-017",
+        "CFG-018",
+        "OBS-001",
+        "OBS-006",
+        "OBS-007",
+        "OBS-008",
+        "OBS-009",
+        "PAR-001",
+        "PAR-003",
+        "PAR-009",
+        "PAR-010",
+        "PAR-011"
+      ]
+    },
+    {
+      "number": 69,
+      "kind": "issue",
+      "title": "Passive mode error",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/69",
+      "state": "open",
+      "updated_at": "2024-11-19T18:56:37Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/69#issuecomment-2486504036"
+      ],
+      "test_case_ids": [
+        "NET-015",
+        "NET-023",
+        "FAIL-012"
+      ]
+    },
+    {
+      "number": 70,
+      "kind": "pr",
+      "title": "Create private user folders, preventing other users from reading user folder contents.",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/70",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "f0c9553418b9d2f27bb79c109c3a5d634a127c0b",
+      "base_sha": "9fa279317254237c858abc4063fa0fd751f47ff8",
+      "merge_commit_sha": "734308efcb63fac60337b574fc6323cddea64e6c",
+      "updated_at": "2025-03-01T10:46:00Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/70#pullrequestreview-2652382466"
+      ],
+      "test_case_ids": [
+        "FS-001",
+        "FS-002",
+        "FS-003",
+        "FS-004",
+        "FS-005",
+        "FS-012",
+        "FS-025",
+        "FUT-012",
+        "PAR-002"
+      ]
+    },
+    {
+      "number": 71,
+      "kind": "issue",
+      "title": "can i config more ports in docker-compose",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/71",
+      "state": "open",
+      "updated_at": "2024-06-28T03:54:54Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "NET-002",
+        "NET-007",
+        "NET-018",
+        "NET-021",
+        "CFG-010",
+        "OBS-009",
+        "PAR-010"
+      ]
+    },
+    {
+      "number": 72,
+      "kind": "issue",
+      "title": "tini can't find start_vsftpd.sh",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/72",
+      "state": "open",
+      "updated_at": "2024-07-05T09:07:58Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "BLD-002"
+      ]
+    },
+    {
+      "number": 73,
+      "kind": "pr",
+      "title": "Allow use of _FILE vars",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/73",
+      "state": "open",
+      "merged": false,
+      "head_sha": "d77cbf2921fe026cb4c7f8ba374a6d2a015e10ce",
+      "base_sha": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+      "merge_commit_sha": "1780bcd4f3fc72e5eb32aa15d771b83a2e57a9f8",
+      "updated_at": "2025-08-15T02:57:43Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "DOC-012",
+        "FUT-002",
+        "FUT-003"
+      ]
+    },
+    {
+      "number": 74,
+      "kind": "pr",
+      "title": "Remove docker volume",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/74",
+      "state": "closed",
+      "merged": true,
+      "head_sha": "d96b2175852fc592e344956c94e3158236d84012",
+      "base_sha": "9fa279317254237c858abc4063fa0fd751f47ff8",
+      "merge_commit_sha": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+      "updated_at": "2025-03-01T10:49:10Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/74#pullrequestreview-2231429226",
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/74#pullrequestreview-2652383121"
+      ],
+      "test_case_ids": [
+        "BLD-004",
+        "FS-026",
+        "FS-027"
+      ]
+    },
+    {
+      "number": 75,
+      "kind": "issue",
+      "title": "Support \"anonymous_enable\" configuration via environment variable",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/75",
+      "state": "open",
+      "updated_at": "2024-08-14T12:23:34Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "AUTH-004",
+        "TLS-030",
+        "CFG-015",
+        "DOC-012",
+        "FUT-001",
+        "FUT-009"
+      ]
+    },
+    {
+      "number": 76,
+      "kind": "issue",
+      "title": "Connection refused",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/76",
+      "state": "closed",
+      "updated_at": "2024-10-18T10:18:27Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/76#issuecomment-2422093258"
+      ],
+      "test_case_ids": [
+        "MODE-015",
+        "NET-016",
+        "NET-017",
+        "NET-027",
+        "NET-029",
+        "DOC-006"
+      ]
+    },
+    {
+      "number": 77,
+      "kind": "pr",
+      "title": "replaced `adduser` command",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/77",
+      "state": "closed",
+      "merged": false,
+      "head_sha": "82482d5901ba58168a176da26734aab8cbc21086",
+      "base_sha": "9fa279317254237c858abc4063fa0fd751f47ff8",
+      "merge_commit_sha": "d1fc29c3bd11a959fc98e3bcce71b00f95c9867c",
+      "updated_at": "2024-11-12T00:24:52Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "BLD-005",
+        "BLD-009"
+      ]
+    },
+    {
+      "number": 78,
+      "kind": "issue",
+      "title": "FTP Uploads fail from mircstats",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/78",
+      "state": "open",
+      "updated_at": "2024-12-17T17:11:44Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "DATA-001",
+        "DATA-002",
+        "DATA-029",
+        "DATA-030",
+        "DATA-034",
+        "DATA-036",
+        "MODE-001",
+        "MODE-002",
+        "NET-025",
+        "TLS-022",
+        "TLS-023",
+        "TLS-031",
+        "FS-021",
+        "LIFE-012",
+        "OBS-009",
+        "COMPAT-001",
+        "COMPAT-004",
+        "COMPAT-005",
+        "COMPAT-006",
+        "PAR-011",
+        "FAIL-001",
+        "FAIL-006",
+        "FAIL-008",
+        "FAIL-011"
+      ]
+    },
+    {
+      "number": 79,
+      "kind": "issue",
+      "title": "FTP rights",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/79",
+      "state": "open",
+      "updated_at": "2025-02-16T11:44:00Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "NET-026",
+        "FS-014",
+        "FS-017",
+        "FS-018",
+        "FS-019"
+      ]
+    },
+    {
+      "number": 80,
+      "kind": "issue",
+      "title": "how to expose a volume?",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/80",
+      "state": "open",
+      "updated_at": "2025-06-19T12:19:20Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/80#issuecomment-2987896210"
+      ],
+      "test_case_ids": [
+        "USR-005",
+        "FS-014",
+        "FS-015",
+        "DOC-011"
+      ]
+    },
+    {
+      "number": 81,
+      "kind": "pr",
+      "title": "configuration parameters management using environment variables",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/pull/81",
+      "state": "open",
+      "merged": false,
+      "head_sha": "9d002d9015213bd4325317a0ccaa6a0d5c9fcb39",
+      "base_sha": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+      "merge_commit_sha": "b8c68043f98e0f249ee4305667ef1a66fde51415",
+      "updated_at": "2025-03-03T09:43:27Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/pull/81#issuecomment-2693792245"
+      ],
+      "test_case_ids": [
+        "AUTH-012",
+        "CFG-016",
+        "DOC-012",
+        "FUT-001",
+        "FUT-004",
+        "FUT-005",
+        "FUT-006",
+        "FUT-007",
+        "FUT-008"
+      ]
+    },
+    {
+      "number": 82,
+      "kind": "issue",
+      "title": "Security issue with CHROOT",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/82",
+      "state": "open",
+      "updated_at": "2025-10-10T11:38:20Z",
+      "discussion_count": 1,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/82#issuecomment-3389580822"
+      ],
+      "test_case_ids": [
+        "FS-004",
+        "FS-006",
+        "FS-011",
+        "FS-024",
+        "LIFE-023",
+        "FUT-012"
+      ]
+    },
+    {
+      "number": 83,
+      "kind": "issue",
+      "title": "Change the Welcome message",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/83",
+      "state": "closed",
+      "updated_at": "2025-07-22T19:00:59Z",
+      "discussion_count": 2,
+      "discussion_urls": [
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/83#issuecomment-3102928529",
+        "https://github.com/delfer/docker-alpine-ftp-server/issues/83#issuecomment-3104405905"
+      ],
+      "test_case_ids": [
+        "CFG-001",
+        "CFG-002"
+      ]
+    },
+    {
+      "number": 84,
+      "kind": "issue",
+      "title": "Feature request: Allow setting FTP control port via environment variable",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/84",
+      "state": "open",
+      "updated_at": "2025-08-13T19:55:56Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "NET-016",
+        "CFG-009",
+        "DOC-012",
+        "FUT-001",
+        "FUT-010"
+      ]
+    },
+    {
+      "number": 85,
+      "kind": "issue",
+      "title": "Add a license",
+      "url": "https://github.com/delfer/docker-alpine-ftp-server/issues/85",
+      "state": "open",
+      "updated_at": "2025-10-07T21:37:24Z",
+      "discussion_count": 0,
+      "discussion_urls": [],
+      "test_case_ids": [
+        "DOC-013",
+        "FUT-014"
+      ]
+    }
+  ],
+  "reviewed_issue_count": 53,
+  "reviewed_pr_count": 32,
+  "reviewed_discussion_count": 182
+}

@@ -1,0 +1,5906 @@
+{
+  "schema_version": 1,
+  "reviewed_on": "2026-11-12",
+  "repository": "https://github.com/delfer/docker-alpine-ftp-server",
+  "commit": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+  "scope": "Specification only; no automated suite has been implemented.",
+  "mode_sets": {
+    "all8": [
+      "ftp-pasv",
+      "ftp-epsv",
+      "ftp-port",
+      "ftp-eprt",
+      "ftps12-pasv",
+      "ftps12-epsv",
+      "ftps12-port",
+      "ftps12-eprt"
+    ],
+    "passive4": [
+      "ftp-pasv",
+      "ftp-epsv",
+      "ftps12-pasv",
+      "ftps12-epsv"
+    ],
+    "active4": [
+      "ftp-port",
+      "ftp-eprt",
+      "ftps12-port",
+      "ftps12-eprt"
+    ],
+    "tls4": [
+      "ftps12-pasv",
+      "ftps12-epsv",
+      "ftps12-port",
+      "ftps12-eprt"
+    ],
+    "control2": [
+      "ftp",
+      "ftps12"
+    ],
+    "startup": [
+      "startup"
+    ],
+    "custom": [
+      "custom-config"
+    ],
+    "manual": [
+      "manual"
+    ],
+    "future": [
+      "future"
+    ],
+    "tls-active2": [
+      "ftps12-port",
+      "ftps12-eprt"
+    ],
+    "self": [
+      "self-contained:see-actions"
+    ]
+  },
+  "groups": [
+    {
+      "prefix": "BLD",
+      "title": "Образ, сборка и зависимости"
+    },
+    {
+      "prefix": "USR",
+      "title": "USERS, парсинг и пароли"
+    },
+    {
+      "prefix": "GRP",
+      "title": "UID, GID и независимость пользователей"
+    },
+    {
+      "prefix": "AUTH",
+      "title": "Control connection и аутентификация"
+    },
+    {
+      "prefix": "DATA",
+      "title": "Файловые операции и содержимое"
+    },
+    {
+      "prefix": "MODE",
+      "title": "Active/passive и переходы между ними"
+    },
+    {
+      "prefix": "NET",
+      "title": "ADDRESS, порты, Docker networking и NAT"
+    },
+    {
+      "prefix": "TLS",
+      "title": "FTPS, сертификаты и защита control/data"
+    },
+    {
+      "prefix": "FS",
+      "title": "Права, изоляция и volumes"
+    },
+    {
+      "prefix": "LIFE",
+      "title": "Старт, остановка, перезапуск и процессы"
+    },
+    {
+      "prefix": "CFG",
+      "title": "Замена vsftpd.conf и приоритет настроек"
+    },
+    {
+      "prefix": "OBS",
+      "title": "Логи, диагностика и устойчивость"
+    },
+    {
+      "prefix": "DOC",
+      "title": "README, Compose, env и запуск пользователем"
+    },
+    {
+      "prefix": "CI",
+      "title": "Запуск тестов и release pipeline"
+    },
+    {
+      "prefix": "COMPAT",
+      "title": "Независимые клиенты и платформы"
+    },
+    {
+      "prefix": "FUT",
+      "title": "Открытые предложения и будущие контракты"
+    },
+    {
+      "prefix": "PAR",
+      "title": "Конкурентность и независимость сессий"
+    },
+    {
+      "prefix": "FAIL",
+      "title": "Обрывы и восстановление передачи"
+    }
+  ],
+  "matrices": [
+    {
+      "id": "MX-CORE",
+      "recipe": "R-ROUNDTRIP",
+      "priority": "P0",
+      "axes": {
+        "mode": [
+          "ftp-pasv",
+          "ftp-epsv",
+          "ftp-port",
+          "ftp-eprt",
+          "ftps12-pasv",
+          "ftps12-epsv",
+          "ftps12-port",
+          "ftps12-eprt"
+        ],
+        "identity": [
+          "auto",
+          "uid-new-gid",
+          "uid-existing-gid",
+          "two-auto",
+          "two-explicit-shared-gid",
+          "mixed-explicit-auto"
+        ],
+        "storage": [
+          "layer",
+          "bind-rw",
+          "named-volume"
+        ],
+        "topology": [
+          "direct-bridge",
+          "published-router"
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 288,
+      "note": "mixed-explicit-auto воспроизводит GRP-007; не исключать из product, пометить только точный известный дефект. published-router имеет достижимые passive и active endpoints."
+    },
+    {
+      "id": "MX-PAYLOAD",
+      "recipe": "R-DATA",
+      "priority": "P0/P1",
+      "axes": {
+        "mode": [
+          "ftp-pasv",
+          "ftp-epsv",
+          "ftp-port",
+          "ftp-eprt",
+          "ftps12-pasv",
+          "ftps12-epsv",
+          "ftps12-port",
+          "ftps12-eprt"
+        ],
+        "size_bytes": [
+          0,
+          1,
+          8191,
+          8192,
+          8193,
+          65535,
+          65536,
+          65537,
+          16777216
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 72,
+      "note": "binary TYPE I, default identity, fresh writable layer, direct bridge."
+    },
+    {
+      "id": "MX-NAMES",
+      "recipe": "R-DATA",
+      "priority": "P1",
+      "axes": {
+        "mode": [
+          "ftp-pasv",
+          "ftp-epsv",
+          "ftp-port",
+          "ftp-eprt",
+          "ftps12-pasv",
+          "ftps12-epsv",
+          "ftps12-port",
+          "ftps12-eprt"
+        ],
+        "name": [
+          "plain.txt",
+          "with space.txt",
+          "кириллица.txt",
+          "日本語.txt",
+          "emoji-😀.txt",
+          "a;b.txt",
+          "a$b.txt",
+          "a&b.txt",
+          "a|b.txt",
+          "a\"b.txt",
+          "-leading.txt",
+          ".hidden"
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 96,
+      "note": "STOR/RETR/DELE точного pathname; dotfile presence в обычном NLST отдельно не требовать."
+    },
+    {
+      "id": "MX-RECOVERY",
+      "recipe": "R-LIFECYCLE",
+      "priority": "P0/P1",
+      "axes": {
+        "security": [
+          "ftp",
+          "ftps12"
+        ],
+        "home": [
+          "default-ftp",
+          "custom-home"
+        ],
+        "storage": [
+          "layer",
+          "bind-rw",
+          "named-volume"
+        ],
+        "event": [
+          "restart",
+          "remove-recreate"
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 24,
+      "note": "recreate+layer теряет файлы; restart+layer сохраняет; password asymmetry описана LIFE-008."
+    },
+    {
+      "id": "MX-READONLY",
+      "recipe": "R-FS",
+      "priority": "P1",
+      "axes": {
+        "mode": [
+          "ftp-pasv",
+          "ftp-epsv",
+          "ftp-port",
+          "ftp-eprt",
+          "ftps12-pasv",
+          "ftps12-epsv",
+          "ftps12-port",
+          "ftps12-eprt"
+        ],
+        "policy": [
+          "mount-ro",
+          "write-enable-no",
+          "per-user-write-no"
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 24,
+      "note": "Одинаковый набор запрещённых mutations и успешного RETR на существующем файле."
+    },
+    {
+      "id": "MX-TLS13",
+      "recipe": "R-TLS",
+      "priority": "P1",
+      "axes": {
+        "method": [
+          "pasv",
+          "epsv",
+          "port",
+          "eprt"
+        ],
+        "tls_version": [
+          "1.3"
+        ]
+      },
+      "combination": "full-cartesian",
+      "expected_combinations": 4,
+      "note": "Обязательный data transfer, client поддерживает tickets/reuse; research подтвердил все4 способа на TLS1.3."
+    }
+  ],
+  "cases": [
+    {
+      "id": "BLD-001",
+      "group": "BLD",
+      "title": "Сборка текущего исходного кода",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Собрать Dockerfile без замены vsftpd, entrypoint или конфигурации; сохранить SHA и package manifest",
+      "expected": "Сборка завершается 0; runtime содержит vsftpd, tini, pidproxy и исполняемый стартовый скрипт",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:3",
+        "github:18",
+        "github:20",
+        "github:36",
+        "github:67"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-002",
+      "group": "BLD",
+      "title": "Shell и формат скрипта",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Проверить shebang, LF, execute bit и выполнить sh -n start_vsftpd.sh в Alpine",
+      "expected": "/bin/sh существует; нет CRLF или синтаксических ошибок; скрипт запускается через tini",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:3",
+        "github:72"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-003",
+      "group": "BLD",
+      "title": "Динамические библиотеки",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Выполнить ldd vsftpd и запустить реальный AUTH TLS",
+      "expected": "Нет missing libraries; TLS действительно работает; одного наличия строки ssl_enable недостаточно",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-004",
+      "group": "BLD",
+      "title": "Конфигурация образа",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "docker image inspect: Entrypoint, ExposedPorts, Volumes, User, StopSignal",
+      "expected": "Entrypoint tini -- start_vsftpd.sh; EXPOSE 21 и 21000..21010 TCP; нет обязательного анонимного VOLUME; runtime по умолчанию root",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:36",
+        "github:59",
+        "github:74"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-005",
+      "group": "BLD",
+      "title": "Состав runtime",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Проверить наличие adduser, addgroup, deluser, getent, pgrep, cut, xargs, chown, mkdir, nologin",
+      "expected": "Все утилиты, используемые скриптом, доступны в образе; утверждение PR77 об отсутствии adduser не считать контрактом",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:77"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-006",
+      "group": "BLD",
+      "title": "Отделение build stage",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Проверить отсутствие alpine-sdk, gcc, make и каталога исходников pidproxy в runtime",
+      "expected": "В образе остаются runtime зависимости; сравнить manifest, не нестабильный точный размер",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-007",
+      "group": "BLD",
+      "title": "Фиксация pidproxy",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Сверить checkout с 193e5080e3e9b733a59e25d8f7ec84aee374b9bb; запустить pidproxy -h",
+      "expected": "Собран ожидаемый код; бинарник запускается на целевой архитектуре",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-008",
+      "group": "BLD",
+      "title": "Сборка с BASE_IMG",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Повторить с явным alpine:3.19 и заранее зафиксированным digest этой же версии",
+      "expected": "Переопределение применяется в обоих FROM; smoke FTP и TLS проходит",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:66",
+        "github:67"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-009",
+      "group": "BLD",
+      "title": "Другой BASE_IMG",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Собрать на более новой Alpine и отдельно на несовместимом не-Alpine образе",
+      "expected": "Новая Alpine: записать совместимость; не-Alpine: ожидаемый диагностируемый отказ apk, поддержка не обещана",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:66",
+        "github:77"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-010",
+      "group": "BLD",
+      "title": "Сборка на amd64",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Собрать и выполнить R-ROUNDTRIP, R-STOP и TLS handshake на linux/amd64",
+      "expected": "Образ запускается, четыре способа data connection и TLS работают",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-011",
+      "group": "BLD",
+      "title": "Сборка на arm64",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Собрать через buildx и выполнить smoke на linux/arm64, указать native или QEMU",
+      "expected": "Нет illegal instruction; pidproxy и vsftpd работают; smoke не заменяется одной сборкой",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:10",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-012",
+      "group": "BLD",
+      "title": "Сборка на arm/v6 и arm/v7",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Отдельно собрать и запустить каждую архитектуру из workflow; сохранить compiler output",
+      "expected": "Обе заявленные платформы работают; ошибки -mtune=native и toolchain видны отдельно",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:10",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-013",
+      "group": "BLD",
+      "title": "Переносимость CPU",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "Запустить один собранный amd64/ARM образ на другом CPU того же target",
+      "expected": "Нет привязки к CPU сборщика; если нет второго CPU, явный manual gate",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "BLD-014",
+      "group": "BLD",
+      "title": "Недоступность зависимостей при сборке",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-BUILD",
+      "actions": "В отдельном build job вернуть ошибку APK mirror и git clone pidproxy",
+      "expected": "Сборка падает с ненулевым кодом; не получается частично рабочий release image",
+      "sources": [
+        "code:Dockerfile:1",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-001",
+      "group": "USR",
+      "title": "USERS не задан",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Новый контейнер без USERS; проверить passwd, home и login",
+      "expected": "alpineftp/alpineftp работает; домашний каталог /ftp/alpineftp; ftp/alpineftp не является новым default",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-002",
+      "group": "USR",
+      "title": "USERS пустой",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Передать USERS= и отдельно удалить переменную",
+      "expected": "Оба случая используют документированный default",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-003",
+      "group": "USR",
+      "title": "Один пользователь",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-password; проверить passwd и успешный/ошибочный login",
+      "expected": "Создан только alice; default alpineftp не добавлен; пароль совпадает",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-004",
+      "group": "USR",
+      "title": "Несколько пользователей",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-pass-a bob|test-pass-b charlie|test-pass-c",
+      "expected": "Каждый входит только со своим паролем; отдельные homes и UID; проверка всех, не только первого",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:34"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-005",
+      "group": "USR",
+      "title": "Домашний каталог задан",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-pass|/home/alice/dir; родитель отсутствует",
+      "expected": "Создан весь путь; passwd содержит точный home; PWD начинается в нём",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:35",
+        "github:80"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-006",
+      "group": "USR",
+      "title": "Пустой home с UID",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-pass||10000",
+      "expected": "Home /ftp/alice; UID=10000; числовой владелец совпадает",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:31"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-007",
+      "group": "USR",
+      "title": "Пустой home с UID и GID",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-pass||10000|82",
+      "expected": "Home default; UID=10000; primary GID=82; login и upload работают",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:21",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-008",
+      "group": "USR",
+      "title": "Завершающие пустые поля",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Сравнить alice|test-pass и alice|test-pass|||",
+      "expected": "Результат эквивалентен для имени, пароля, home и автоматически выбранных ID",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-009",
+      "group": "USR",
+      "title": "Пробелы между пользователями",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Варианты: один/несколько пробелов, ведущие/концевые пробелы, tab, newline-разделитель",
+      "expected": "Допустимые IFS-разделители не создают пустых пользователей; каждый ожидаемый account существует",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:34"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-010",
+      "group": "USR",
+      "title": "Короткий пароль README",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=one|1234; дождаться FTP и выполнить upload",
+      "expected": "Предупреждение Bad password не считать ошибкой; пароль из README принимается",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:26"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-011",
+      "group": "USR",
+      "title": "Пароль с пунктуацией",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Отдельные данные: !abc!, a$b, a;b, a&b, a:b, a=b, a%z; передавать argv/env без shell",
+      "expected": "Значение не исполняется shell; точный пароль позволяет login; нет утечки в логи",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:34",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-012",
+      "group": "USR",
+      "title": "Пароль с кавычками и обратным слешем",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Отдельно a\"b, a'b, a\\b, буквальные \\n и \\c; сравнить введённые bytes и login",
+      "expected": "Зафиксировать влияние echo -e; не считать поддержку escape-последовательностей доказанной",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:14",
+        "github:55"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-013",
+      "group": "USR",
+      "title": "UTF-8 пароль",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Передать пароль с кириллицей/emoji через env; проверить login правильными и другими UTF-8 bytes",
+      "expected": "Записать поддержку фактического Alpine password backend; без нормализации данных тестом",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-014",
+      "group": "USR",
+      "title": "Имя с дефисом и подчёркиванием",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice_1 и ftp-admin; новый контейнер на каждый вариант",
+      "expected": "Создание, login, passwd, home и upload работают для разрешённых BusyBox имён",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:38"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-015",
+      "group": "USR",
+      "title": "Нет пароля или разделителя",
+      "priority": "P0",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Данные отдельно: alice; alice|; |password; ||; whitespace-only",
+      "expected": "Желаемый результат: явная ошибка конфигурации, ненулевой exit, нет доступного пустого account; текущее поведение снять отдельно",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-016",
+      "group": "USR",
+      "title": "Недопустимое имя",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Варианты: имя с literal double quote, /, :, leading -, control char, слишком длинное имя",
+      "expected": "Явный отказ; рабочие системные accounts не изменены; нет ложного ready",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:14",
+        "github:55",
+        "github:63"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-017",
+      "group": "USR",
+      "title": "Разделитель внутри значения",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Пароль с |; home с |; пароль/home с пробелом или newline",
+      "expected": "Формат не имеет escape-grammar; не обещать поддержку; зафиксировать отказ/фактический parse и запретить тихое создание иных accounts",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:34"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-018",
+      "group": "USR",
+      "title": "Лишние поля",
+      "priority": "P1",
+      "expectation_type": "decision",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS=alice|test-pass||10000|82|extra",
+      "expected": "Решить: reject или ignore; до решения characterization с точным passwd и логом",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-019",
+      "group": "USR",
+      "title": "Дубликат имени",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Два определения alice с разными паролями/home/UID",
+      "expected": "Желаемый результат: reject до FTP ready; записать, какая запись побеждает сейчас; нет молчаливого частичного успеха",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-020",
+      "group": "USR",
+      "title": "Совпадение с системным account",
+      "priority": "P0",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Имена root, ftp, vsftp, nobody в новых изолированных контейнерах",
+      "expected": "Желаемый результат: reject; не менять пароль/права системного account; не использовать эти users в других тестах",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:13"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-021",
+      "group": "USR",
+      "title": "Имена шаблонов shell",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Имя/пароль/home с *, ?, [x]; создать совпадающие файлы в cwd",
+      "expected": "Не должно быть pathname expansion, создания неожиданных пользователей или изменения посторонних путей",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-022",
+      "group": "USR",
+      "title": "Значения, похожие на options",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Имя -n, home -p, пароль -n и -e; только sandbox container",
+      "expected": "Нет трактовки user data как опций echo/adduser/mkdir/chown; явный отказ недопустимых значений",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-023",
+      "group": "USR",
+      "title": "Относительный home",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass|relative/path",
+      "expected": "Записать нормализацию и login; документация не обещает относительные homes; рекомендовать абсолютный path",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-024",
+      "group": "USR",
+      "title": "Много пользователей",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Создать 100 разных accounts; login первого, среднего, последнего",
+      "expected": "Нет потери пользователей/перепутанных credentials; boot укладывается в отдельный бюджет 120 s",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:34"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-025",
+      "group": "USR",
+      "title": "Мусор не включает default",
+      "priority": "P0",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "USERS содержит только некорректную непустую запись",
+      "expected": "Не переходить молча на alpineftp/alpineftp; результат конфигурации диагностируется",
+      "sources": [
+        "code:start_vsftpd.sh:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-026",
+      "group": "USR",
+      "title": "Очистка старых FTP accounts",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "До entrypoint создать obsolete с home /ftp/obsolete; USERS содержит только alice",
+      "expected": "obsolete удалён из passwd/shadow; данные home не удалены; alice работает",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:2",
+        "github:13"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-027",
+      "group": "USR",
+      "title": "Очистка при отсутствии совпадений",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Чистый образ без accounts с /ftp/; выполнить custom command после init",
+      "expected": "xargs -r не вызывает deluser без аргумента; системные accounts сохраняются",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:13"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-028",
+      "group": "USR",
+      "title": "Граница совпадения очистки",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Seed account с home /data/ftp/alice и отдельным home /home/alice",
+      "expected": "Первый попадает под текущий grep '/ftp/', второй остаётся; это substring, не registry управляемых users",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:2",
+        "github:13"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "USR-029",
+      "group": "USR",
+      "title": "Частичная ошибка создания",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Три записи: valid, invalid, valid; проверить все accounts, код выхода, ready",
+      "expected": "Желаемый результат: атомарный отказ или явная ошибка; существование первого не означает успешную конфигурацию",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:38"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-001",
+      "group": "GRP",
+      "title": "Автоматические ID",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Два простых пользователя без UID/GID",
+      "expected": "Разные свободные UID; корректные primary groups; home и upload принадлежат соответствующему user",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-002",
+      "group": "GRP",
+      "title": "Явный UID и implicit GID",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass||10000; GID 10000 отсутствует",
+      "expected": "UID=10000; создаётся/используется GID=10000; home и новые файлы имеют эти ID",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-003",
+      "group": "GRP",
+      "title": "Разные UID и GID",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass||10000|12000; группа отсутствует",
+      "expected": "UID=10000, primary GID=12000; группа создаётся один раз",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-004",
+      "group": "GRP",
+      "title": "Существующий GID",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass||10000|82",
+      "expected": "Использован www-data, duplicate group не создаётся; home и файл имеют GID82",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:31",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-005",
+      "group": "GRP",
+      "title": "UID совпадает только с существующим GID",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass||82; пользователь UID82 предварительно отсутствует",
+      "expected": "Создание UID82 успешно с existing group82; регрессия #31 не возвращается",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:31"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-006",
+      "group": "GRP",
+      "title": "Два UID в одной группе",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-a||10000|12000 bob|test-b||10001|12000",
+      "expected": "Оба account существуют; разные UID, общий GID; права общей группы проверяются отдельно",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-007",
+      "group": "GRP",
+      "title": "Explicit UID, затем automatic UID",
+      "priority": "P0",
+      "expectation_type": "known-defect",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "first|test-a||10000|10000 second|test-b",
+      "expected": "Оба account должны существовать; у second свободный UID, а не stale -u10000; baseline: second отсутствует",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-008",
+      "group": "GRP",
+      "title": "Existing GID, затем automatic account",
+      "priority": "P0",
+      "expectation_type": "known-defect",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "first|test-a||10000|82 second|test-b",
+      "expected": "Second получает собственную группу; GROUP_OPT от first не наследуется",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-009",
+      "group": "GRP",
+      "title": "Перестановки пользователей",
+      "priority": "P1",
+      "expectation_type": "known-defect",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Три роли auto, explicit-new-group, explicit-existing-group; все 6 перестановок",
+      "expected": "Семантика каждой роли не зависит от позиции; UID/GID заданы верно; все login успешны",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:34",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-010",
+      "group": "GRP",
+      "title": "GID без UID",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice|test-pass|||82",
+      "expected": "Зафиксировано: GID игнорируется, создаётся автоматическая primary group; желаемая поддержка требует решения",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:21",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-011",
+      "group": "GRP",
+      "title": "Явный UID занят",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Seed unrelated UID10000, затем alice UID10000",
+      "expected": "Явная ошибка без нового дублирующего account и без chown каталога unrelated user",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:31"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-012",
+      "group": "GRP",
+      "title": "Дубликат UID в USERS",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "alice UID10000 и bob UID10000",
+      "expected": "Явный отказ конфигурации; не молчаливый пропуск второго account",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:31"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-013",
+      "group": "GRP",
+      "title": "Конфликт имени группы",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Seed group alice с другим GID; создать alice с отсутствующим GID12000",
+      "expected": "Диагностируемый отказ или согласованный reuse; нельзя объявить успех с неправильным GID",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-014",
+      "group": "GRP",
+      "title": "Некорректные ID",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "UID/GID отдельно: abc, -1, 1.5, 4294967296, leading whitespace",
+      "expected": "Ненулевой отказ до ready; ни один иной account не затронут",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-015",
+      "group": "GRP",
+      "title": "Пограничные ID",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "UID/GID: 0, 1, 65534, 65535, большое допустимое числовое значение; новый fixture на вариант",
+      "expected": "Системные коллизии отклонены; поддержка числовых границ зафиксирована по Alpine, не угадана",
+      "sources": [
+        "code:start_vsftpd.sh:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-016",
+      "group": "GRP",
+      "title": "Leading zeros",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "UID010000/GID00082; сравнить passwd и stat numeric IDs",
+      "expected": "Записать десятичную/иную интерпретацию; matcher сравнивает числа, не имена",
+      "sources": [
+        "code:start_vsftpd.sh:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-017",
+      "group": "GRP",
+      "title": "Существующая группа без одноимённой группы user",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "UID10000/GID82; проверить chown и id",
+      "expected": "Home получает primary group82; пустая переменная GROUP в другом branch не даёт root ownership",
+      "sources": [
+        "code:start_vsftpd.sh:36",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "GRP-018",
+      "group": "GRP",
+      "title": "Чистота внешних option variables",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-USERS",
+      "actions": "Передать в env UID_OPT, GROUP_OPT, ADDR_OPT, TLS_OPT с тестовыми значениями",
+      "expected": "Желаемо: внутренние переменные не наследуются из внешнего env; baseline отдельно, никакого запуска через eval",
+      "sources": [
+        "code:start_vsftpd.sh:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-001",
+      "group": "AUTH",
+      "title": "Успешный login",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Подключение, USER, PASS, PWD, QUIT",
+      "expected": "220, промежуточный 331, 230; правильный home; 221 при QUIT",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-002",
+      "group": "AUTH",
+      "title": "Неправильный пароль",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Правильное имя и неверный пароль; затем новый правильный login",
+      "expected": "Отказ 530 без data access; основной daemon жив; следующий клиент работает",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-003",
+      "group": "AUTH",
+      "title": "Несуществующий пользователь",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "USER missing, произвольный PASS",
+      "expected": "530; нет созданного account/home; нет утечки о системных паролях",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-004",
+      "group": "AUTH",
+      "title": "Анонимный вход",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "anonymous и ftp с любым password",
+      "expected": "Не разрешён конфигурацией anonymous_enable=NO; локальный account ftp не считать anonymous fixture",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:17",
+        "github:39",
+        "github:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-005",
+      "group": "AUTH",
+      "title": "Команды до login",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "CWD, LIST, NLST, RETR, STOR, DELE до успешного PASS, отдельно каждую",
+      "expected": "530 или предусмотренный отказ; нет чтения/записи данных",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-006",
+      "group": "AUTH",
+      "title": "PASS до USER",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Послать PASS без USER; потом корректный USER/PASS",
+      "expected": "Отказ протокола, daemon жив; новая/восстановленная сессия логинится",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-007",
+      "group": "AUTH",
+      "title": "Повторный login",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Успешный login, повторить USER/PASS тем же и другим пользователем",
+      "expected": "Записать поддерживаемую state machine; не допустить переноса прав между пользователями",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-008",
+      "group": "AUTH",
+      "title": "Смена пароля вне env",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "chpasswd в работающем контейнере; старый и новый login",
+      "expected": "Новый пароль действует немедленно для новых соединений; поведение после restart в LIFE",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:8"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-009",
+      "group": "AUTH",
+      "title": "Регистр имени/пароля",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "alice против Alice и password против PASSWORD",
+      "expected": "Неправильный регистр не даёт доступ к alice; нет case folding со стороны harness",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-010",
+      "group": "AUTH",
+      "title": "Базовые control команды",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Отдельно SYST, FEAT, HELP, NOOP, TYPE I, TYPE A, PWD",
+      "expected": "Корректный класс ответа; FEAT разобрать multiline; нет ожидания несуществующих фич",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-011",
+      "group": "AUTH",
+      "title": "Неизвестная/повреждённая команда",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Неизвестный verb, пустая строка, лишние arguments, неверный PORT syntax",
+      "expected": "Ограниченный 4xx/5xx отказ; соединение/daemon не зависает; следующий клиент работает",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-012",
+      "group": "AUTH",
+      "title": "Ограничения login attempts",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Отправить несколько неправильных PASS; снять default max_login_fails",
+      "expected": "Записать после какого отказа control закрывается; при custom limit проверить точное значение",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-013",
+      "group": "AUTH",
+      "title": "Разрыв control до/после login",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Открыть и закрыть TCP без QUIT на обеих стадиях",
+      "expected": "Listener и контейнер остаются живы; новый login/upload работает",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:15",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-014",
+      "group": "AUTH",
+      "title": "Длинная команда",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "0, 1, 4096, 65536 bytes в raw control; socket deadline и отдельный container",
+      "expected": "Корректный отказ/закрытие без crash, зависания или роста ресурсов после reconnect",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "AUTH-015",
+      "group": "AUTH",
+      "title": "AUTH на обычном FTP",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-CONTROL",
+      "actions": "Без TLS_CERT/TLS_KEY отправить AUTH TLS и проверить FEAT",
+      "expected": "Сервер не делает неожиданный TLS upgrade; отказ не означает, что порт 21 недоступен",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-001",
+      "group": "DATA",
+      "title": "Round trip",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "STOR, LIST, NLST, RETR, DELE файла с bytes(0..255)*17",
+      "expected": "SHA256 и длина исходника/диска/RETR совпадают; 226 после data EOF; файла нет после DELE",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:6",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-002",
+      "group": "DATA",
+      "title": "Пустой файл",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "STOR и RETR payload размером 0",
+      "expected": "Файл существует, размер 0, оба transfer завершаются успешно; не путать с обрывом непустого STOR",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-003",
+      "group": "DATA",
+      "title": "Размеры около границ буфера",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Варианты 1, 8191, 8192, 8193, 65535, 65536, 65537 bytes",
+      "expected": "Точная длина и hash для каждого варианта",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-004",
+      "group": "DATA",
+      "title": "Файл 16 MiB",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Детерминированный неповторяющийся поток; streaming без read-all",
+      "expected": "Нет усечения или перестановки; ограниченный RSS клиента; размер и hash совпадают",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-005",
+      "group": "DATA",
+      "title": "Большой файл",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Nightly 256 MiB; manual sparse или streamed >4 GiB при достаточной квоте",
+      "expected": "Нет integer overflow; hash/size корректны; бюджет и фактический skip указаны",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-006",
+      "group": "DATA",
+      "title": "Перезапись",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "STOR существующего более длинного файла более коротким",
+      "expected": "Итог точно равен новому payload, старый хвост не остаётся",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-007",
+      "group": "DATA",
+      "title": "Append",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "APPE к существующему и отдельно к отсутствующему файлу",
+      "expected": "Результат A+B для existing; ожидаемое создание нового по правилам vsftpd",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-008",
+      "group": "DATA",
+      "title": "Resume download",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "REST 0, middle, size, size+1 перед RETR известного файла",
+      "expected": "Для валидных offset точный suffix; для выхода за EOF снять точный ответ и отсутствие лишних bytes",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-009",
+      "group": "DATA",
+      "title": "Resume upload",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Предзаполнить prefix; REST middle; STOR suffix",
+      "expected": "Полный результат совпадает с ожидаемым; содержимое после offset не дублируется",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-010",
+      "group": "DATA",
+      "title": "Невалидный REST",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "REST -1, abc, огромное число; затем обычный RETR",
+      "expected": "Отказ аргумента без переноса stale offset на новый transfer",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-011",
+      "group": "DATA",
+      "title": "Переименование",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "RNFR existing и RNTO new; вложенный path того же filesystem",
+      "expected": "350 затем 250; старое имя исчезло, новое содержит исходные bytes",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-012",
+      "group": "DATA",
+      "title": "Неверная последовательность rename",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "RNTO без RNFR; RNFR missing; RNTO в unwritable directory",
+      "expected": "Предусмотренный отказ; исходные данные не теряются",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-013",
+      "group": "DATA",
+      "title": "Создание и удаление каталога",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "MKD nested-child, CWD, PWD, CDUP, RMD пустого каталога",
+      "expected": "Каталог создаётся/удаляется; path и parent корректны",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:23"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-014",
+      "group": "DATA",
+      "title": "Удаление непустого каталога",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "RMD каталога с обычным файлом и отдельно с единственным dotfile",
+      "expected": "Отказ; файл сохраняется; после явного удаления содержимого RMD работает",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:47"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-015",
+      "group": "DATA",
+      "title": "Несуществующие paths",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "RETR, SIZE, CWD, DELE, RMD missing — отдельные варианты",
+      "expected": "550/соответствующий 5xx; нет phantom success; следующий transfer успешен",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-016",
+      "group": "DATA",
+      "title": "STOR в отсутствующего родителя",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Upload no/such/dir/file",
+      "expected": "Отказ 550/553; не создать неожиданные родители и не оставить файл вне target",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:23"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-017",
+      "group": "DATA",
+      "title": "LIST и NLST пустого каталога",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Изолированная пустая директория, включая пустой data response",
+      "expected": "Успешный transfer с пустым набором; не timeout и не ошибка клиента",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:6"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-018",
+      "group": "DATA",
+      "title": "LIST/NLST большого каталога",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Создать 1000 файлов и 10 каталогов; сравнить множества имён",
+      "expected": "Все ожидаемые имена без дублей/потерь; порядок не проверять",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-019",
+      "group": "DATA",
+      "title": "Dotfiles по умолчанию",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "visible.txt и .hidden; LIST, LIST -a, NLST, NLST -a",
+      "expected": "Зафиксировать отсутствие dotfile в обычном NLST; -a/custom force_dot_files проверять отдельно",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:47"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-020",
+      "group": "DATA",
+      "title": "Файлы с пробелами",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Имена one two.txt, leading space, trailing space; сверить bytes имени через filesystem",
+      "expected": "Нет split имени на arguments; корректный RETR/DELE или явное ограничение сервера",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-021",
+      "group": "DATA",
+      "title": "UTF-8 имена",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Кириллица, CJK, emoji, комбинированные символы; UTF8 FEAT/OPTS зафиксировать",
+      "expected": "Точный roundtrip encoded filename; не выполнять Unicode normalization в тесте",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-022",
+      "group": "DATA",
+      "title": "Специальные символы имени",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Данные: a;b, a$b, a&b, a|b, a\"b, -leading, [] и *",
+      "expected": "Командные символы не исполняются; для wildcard listing отдельно учитывать semantics glob",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-023",
+      "group": "DATA",
+      "title": "CR/LF в пути",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Отправить pathname с newline через клиент API и отдельно raw protocol",
+      "expected": "API отклоняет injection либо сервер обрабатывает только протокол; никакого исполнения дополнительной команды от harness",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-024",
+      "group": "DATA",
+      "title": "Пределы имени/пути",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Компоненты 255/256 bytes и длинный nested path; ASCII и multibyte по byte length",
+      "expected": "В пределах FS limit работает; превышение даёт отказ без truncated имени",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-025",
+      "group": "DATA",
+      "title": "Абсолютный и относительный path",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Один и тот же файл через /ftp/alice/sub/f и sub/f в default config",
+      "expected": "Оба адресуют ожидаемый файл; при chroot абсолютные paths имеют другую базу и другой case",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:23"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-026",
+      "group": "DATA",
+      "title": "Нормализация пути",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "CWD ./sub, sub/../sub, повторные /, завершающий /",
+      "expected": "Корректный resolved path; доступ по UNIX permissions; нет неожиданного создания",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-027",
+      "group": "DATA",
+      "title": "SIZE и MDTM",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Известный binary file и фиксированный mtime UTC; TYPE I, SIZE, MDTM",
+      "expected": "Размер в bytes; MDTM UTC с точностью filesystem; не сравнивать локальное отображение LIST",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:33"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-028",
+      "group": "DATA",
+      "title": "MLST и MLSD",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Сверить FEAT и отправить команды независимо от наличия в stdlib",
+      "expected": "Если поддерживаются — проверять facts; если нет — явный 5xx capability result, без xfail любого сбоя",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-029",
+      "group": "DATA",
+      "title": "ASCII по умолчанию",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "TYPE A; upload/download raw LF, CRLF, CR, NUL через data socket без retrlines",
+      "expected": "Снять фактические bytes при закомментированных ascii_*; клиент не должен сам скрыть преобразования",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-030",
+      "group": "DATA",
+      "title": "ASCII с custom config",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "ascii_upload_enable=YES и ascii_download_enable=YES; known LF/CRLF fixtures",
+      "expected": "Ожидаемая нормализация по vsftpd; binary TYPE I остаётся побайтовым",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-031",
+      "group": "DATA",
+      "title": "Смена TYPE между transfers",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "I→A→I в одной сессии",
+      "expected": "Последний binary transfer побайтово корректен, нет stale TYPE state",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-032",
+      "group": "DATA",
+      "title": "STOU",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Уникальный upload поверх заранее существующего имени",
+      "expected": "Если команда поддерживается, unique имя и bytes корректны; original не перезаписан",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-033",
+      "group": "DATA",
+      "title": "SITE CHMOD",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "chmod своего файла на 0640; отказ на чужой; проверить numeric mode",
+      "expected": "Зафиксировать текущую поддержку; права не повышаются за пределы UNIX ownership",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:64"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-034",
+      "group": "DATA",
+      "title": "Два файла подряд в одной сессии",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "100 STOR/RETR/delete с разными размерами и именами",
+      "expected": "Все transfer получают финальный ответ; data socket каждый раз новый; нет рассинхронизации control",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:68",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-035",
+      "group": "DATA",
+      "title": "Повтор после отказа",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "После missing RETR/unwritable STOR выполнить валидный STOR+RETR",
+      "expected": "Ошибка одной операции не ломает control и последующую передачу",
+      "sources": [
+        "code:vsftpd.conf:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DATA-036",
+      "group": "DATA",
+      "title": "ABOR и partial upload",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-DATA",
+      "actions": "Начать большой STOR, передать prefix, ABOR/закрыть data; проверить control и файл",
+      "expected": "Нет ложного успешного полного upload; partial policy и ответы 426/226 зафиксировать; новый transfer работает",
+      "sources": [
+        "code:vsftpd.conf:5",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-001",
+      "group": "MODE",
+      "title": "Точный способ data connection",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-MODE",
+      "actions": "Отдельно принудить PASV, EPSV, PORT, EPRT; запретить fallback",
+      "expected": "Trace содержит выбранный verb; transfer успешен; другие verbs не использованы",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-002",
+      "group": "MODE",
+      "title": "Фактическое направление TCP",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-MODE",
+      "actions": "Захватить socket endpoints на сервере и клиенте для выбранного режима",
+      "expected": "Passive: клиент→server passive-port; active: server→client advertised-port; TLS не меняет направление TCP",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:39",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-003",
+      "group": "MODE",
+      "title": "Active при включённом passive",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "active4",
+      "recipe": "R-MODE",
+      "actions": "Не менять дефолтный pasv_enable=YES; выполнить PORT/EPRT transfers",
+      "expected": "Active работает одновременно с passive; не требуется pasv_enable=NO",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:39"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-004",
+      "group": "MODE",
+      "title": "Source port20 в active",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "active4",
+      "recipe": "R-MODE",
+      "actions": "Listener клиента записывает peer port для PORT и EPRT",
+      "expected": "Внутри прямой Docker-сети source port20; после NAT допускается translation, измерить обе стороны",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-005",
+      "group": "MODE",
+      "title": "Смена passive→active",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "PASV STOR → PORT RETR; EPSV STOR → EPRT RETR",
+      "expected": "Обе операции используют требуемый режим и завершаются 226 в одной control session",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-006",
+      "group": "MODE",
+      "title": "Смена active→passive",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "PORT STOR → PASV RETR; EPRT STOR → EPSV RETR",
+      "expected": "Предыдущее data target не используется повторно",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-007",
+      "group": "MODE",
+      "title": "Смена legacy→extended",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "PASV→EPSV, PORT→EPRT; затем обратные последовательности",
+      "expected": "Каждый data socket использует последний согласованный режим, без stale endpoint",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-008",
+      "group": "MODE",
+      "title": "Repeated negotiation",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-MODE",
+      "actions": "Дважды PASV/EPSV до LIST; два PORT/EPRT с разными listener ports",
+      "expected": "Используется последний endpoint; предыдущие listeners освобождаются в ограниченный срок",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-009",
+      "group": "MODE",
+      "title": "Data command без negotiation",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "После login отправить LIST/RETR/STOR без PASV/PORT",
+      "expected": "Записать default active-port поведение или отказ; не считать любой timeout успешным отрицательным тестом",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-010",
+      "group": "MODE",
+      "title": "EPSV ALL",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "Послать EPSV ALL, затем PASV/PORT/EPRT и отдельно EPSV",
+      "expected": "При принятом EPSV ALL legacy/active отказываются в этой session; новая session работает",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-011",
+      "group": "MODE",
+      "title": "PORT с чужим IP",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "active4",
+      "recipe": "R-MODE",
+      "actions": "Advertise адрес третьего контейнера, который пишет счётчик входящих соединений",
+      "expected": "Default запрещает FTP bounce; не приходит нежелательное соединение к третьей стороне",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-012",
+      "group": "MODE",
+      "title": "EPRT с неверной address family",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "EPRT |2|IPv6|port| на IPv4 control; отдельно unsupported AF3",
+      "expected": "Протокольный отказ с поддерживаемым AF; listener не теряется",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-013",
+      "group": "MODE",
+      "title": "Malformed PORT/EPRT",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "active4",
+      "recipe": "R-MODE",
+      "actions": "Неполные octets, port0, octet256, отрицательный port, неверный separator",
+      "expected": "Ограниченный 5xx, без crash и без исходящих соединений к незаданным адресам",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-014",
+      "group": "MODE",
+      "title": "Низкий active target port",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "active4",
+      "recipe": "R-MODE",
+      "actions": "В отдельной сети advertise локальные test listeners на 21/80/1023 и 1024",
+      "expected": "Снять default ограничения vsftpd; явный запрет небезопасных targets по политике сервера",
+      "sources": [
+        "code:vsftpd.conf:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-015",
+      "group": "MODE",
+      "title": "IPv6 default",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "Подключиться к IPv6 адресу контейнера при default listen=YES",
+      "expected": "Не объявлять IPv6 поддержанным по EXPOSE; явный capability result; IPv4 продолжает работать",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32",
+        "github:76"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "MODE-016",
+      "group": "MODE",
+      "title": "IPv6 custom config",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-MODE",
+      "actions": "listen=NO, listen_ipv6=YES; EPSV и EPRT AF2, FTP и FTPS12",
+      "expected": "Transfers успешны в явно включённой IPv6-сети; PASV/PORT IPv4 не включать в этот product",
+      "sources": [
+        "code:vsftpd.conf:21",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-001",
+      "group": "NET",
+      "title": "Диапазон по умолчанию",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Не задавать MIN_PORT/MAX_PORT; 30 PASV/EPSV negotiation и transfers",
+      "expected": "Каждый advertised/listening port входит в 21000..21010 включительно; не требовать появления каждого случайного port",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:9",
+        "github:28"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-002",
+      "group": "NET",
+      "title": "Нестандартный диапазон",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "MIN_PORT=30000 MAX_PORT=30004; опубликовать точно эти 5 ports",
+      "expected": "Все advertised ports30000..30004; upload/list/download проходят",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-003",
+      "group": "NET",
+      "title": "Один passive port",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "MIN_PORT=MAX_PORT=30000; последовательные transfers",
+      "expected": "Используется только 30000; после завершения он переиспользуется",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:46"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-004",
+      "group": "NET",
+      "title": "Только MIN_PORT или MAX_PORT",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "По отдельности MIN_PORT=21005; MAX_PORT=21005; второй берётся default",
+      "expected": "Получившийся диапазон корректен и используется; не заменять обе границы в harness",
+      "sources": [
+        "code:start_vsftpd.sh:59"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-005",
+      "group": "NET",
+      "title": "Пустые переменные портов",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "MIN_PORT= и MAX_PORT=",
+      "expected": "Используются defaults21000/21010",
+      "sources": [
+        "code:start_vsftpd.sh:59"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-006",
+      "group": "NET",
+      "title": "Границы диапазона",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "С custom однопортовым range проверить 1024 и 65535, при свободном port",
+      "expected": "Port вычислен и разобран без overflow; контейнеру доступны права/listener",
+      "sources": [
+        "code:start_vsftpd.sh:59"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-007",
+      "group": "NET",
+      "title": "Некорректный диапазон",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "MIN>MAX, -1, 65536, abc, whitespace, port0 — отдельные запуски",
+      "expected": "Желаемо: nonzero с понятной ошибкой до ready; не случайные system ports",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-008",
+      "group": "NET",
+      "title": "ADDRESS отсутствует",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Прямая сеть и отдельно published bridge; inspect raw227, контрольный peer и data",
+      "expected": "В direct mode работает; NAT без ADDRESS характеризуется отдельно, клиент не подменяет IP",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:4",
+        "github:6"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-009",
+      "group": "NET",
+      "title": "ADDRESS IPv4",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Равный достижимому server IPv4 в выбранной топологии",
+      "expected": "Raw PASV содержит заданный IPv4; data peer соответствует server; transfer работает",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:4",
+        "github:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-010",
+      "group": "NET",
+      "title": "ADDRESS DNS",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "ftp.test резолвится внутри server network в правильный IPv4",
+      "expected": "Boot, raw227 и transfers работают; pasv_addr_resolve=YES действительно применён",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:4",
+        "github:5",
+        "github:27"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-011",
+      "group": "NET",
+      "title": "DNS несколько A records",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Один hostname с двумя контролируемыми A; записать выбранный адрес",
+      "expected": "Снять стратегию resolution и время, не случайный ожидаемый один адрес",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:4"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-012",
+      "group": "NET",
+      "title": "DNS изменился",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Изменить A после startup и до нового PASV; затем restart",
+      "expected": "Записать когда vsftpd повторно резолвит ADDRESS; новый контейнер использует новое значение",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:4"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-013",
+      "group": "NET",
+      "title": "Неразрешимый ADDRESS",
+      "priority": "P0",
+      "expectation_type": "hardening",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Несуществующий домен в тестовом DNS; снять foreground vsftpd stderr при необходимости",
+      "expected": "Запуск не становится функционально ready; ошибку не путать с short-password warning; текущее exit может быть 0",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:11",
+        "github:26",
+        "github:43"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-014",
+      "group": "NET",
+      "title": "Неправильный ADDRESS: PASV против EPSV",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "ADDRESS указывает на недостижимый тестовый IP; один server, два клиента",
+      "expected": "Raw PASV выявляет wrong advertised IP и data fail; EPSV использует control peer и может пройти; не auto-fallback",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:6",
+        "github:9"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-015",
+      "group": "NET",
+      "title": "ADDRESS localhost/0.0.0.0",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Клиент в другом контейнере; test localhost и 0.0.0.0 отдельно",
+      "expected": "Зафиксировать неверность такого public address для raw PASV; успешный клиентский override не маскирует проблему",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:63",
+        "github:69"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-016",
+      "group": "NET",
+      "title": "Опубликованный control port",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Host2121→container21; identity passive ports; внешнему клиенту ADDRESS host",
+      "expected": "Control2121 и passive transfers работают; server listen_port остаётся 21",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:76",
+        "github:84"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-017",
+      "group": "NET",
+      "title": "Passive ports не опубликованы",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Опубликовать только 21; клиент снаружи Docker-сети",
+      "expected": "Login успешен, data не проходит с ограниченным timeout; тот же transfer внутри сети работает",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:6",
+        "github:46",
+        "github:76"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-018",
+      "group": "NET",
+      "title": "Частично опубликованный range",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Server30000..30004, наружу только 30000..30002; детерминированно ограничить server single-port для обеих ветвей",
+      "expected": "Published port успешен, unpublished data не проходит; диапазоны сверяются явно",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-019",
+      "group": "NET",
+      "title": "Passive port translation",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Host31000→container30000, server advertises30000; isolated client вне bridge",
+      "expected": "Raw protocol обнаруживает mismatch; без NAT helper transfer не проходит; предусмотреть identity mapping как рабочий контроль",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:9",
+        "github:46"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-020",
+      "group": "NET",
+      "title": "Листенеры открываются по запросу",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "До login/PASV нет требования listen на всех passive ports; после PASV проверить ss/netstat",
+      "expected": "Control port постоянный; выбранный data port открывается после negotiation и освобождается после transfer/session",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:28"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-021",
+      "group": "NET",
+      "title": "Лимит passive ports",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Удерживать PASV sockets в tiny range; следующий клиент; затем освободить sockets",
+      "expected": "Отказ/очередь ограничены; daemon жив; после освобождения новый transfer проходит; ожидание не равно crash",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:68",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-022",
+      "group": "NET",
+      "title": "NAT/FTP ALG",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Изолированный router с и без FTP helper; сравнить raw227 до и после middlebox для FTP и FTPS",
+      "expected": "FTP ALG может переписать 227; TLS opaque; сохранить captures и не приписывать rewrite серверу",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:9",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-023",
+      "group": "NET",
+      "title": "Разные IP control/data",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Control клиент A, data соединение от B; third client в одной сети",
+      "expected": "Default отвергает data от B; обычный data от A работает; не включать promiscuous для исправления harness",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:46",
+        "github:69"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-024",
+      "group": "NET",
+      "title": "Firewall блокирует data",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Router разрешает control, запрещает выбранный passive port; затем разрешить именно его",
+      "expected": "Сначала login есть/data failure, затем тот же сценарий проходит; восстановить собственные router rules",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-025",
+      "group": "NET",
+      "title": "Active через NAT",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Дополнительная проверка PORT/EPRT: недостижимый адрес клиента против корректного callback mapping",
+      "expected": "Неверный target не работает, достижимый работает; указать source/destination с обеих сторон NAT",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:32",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-026",
+      "group": "NET",
+      "title": "Docker host network",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Только Linux dedicated runner; занятые 21/20/range проверены до запуска",
+      "expected": "Smoke FTP и FTPS, active/passive; ports: не считать publish при network_mode:host",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:79"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-027",
+      "group": "NET",
+      "title": "Docker Desktop",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "macOS arm64 и Windows/Linux VM: published control+passive и separate client container",
+      "expected": "Зафиксировать runtime/host architecture; не ожидать доступности container IP из host",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:48",
+        "github:76"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-028",
+      "group": "NET",
+      "title": "Удалённый Docker daemon/CI DinD",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Клиент в отдельной машине/network namespace; address берётся со стороны клиента",
+      "expected": "Ни localhost агента, ни daemon-side bind path не предполагаются общими; roundtrip проходит в явной топологии",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:46",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "NET-029",
+      "group": "NET",
+      "title": "Порт control занят",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-NET",
+      "actions": "Два server в host-mode/одном netns либо конфликт published host port",
+      "expected": "Второй запуск явно отказывает; первый server и его файлы не затронуты",
+      "sources": [
+        "code:start_vsftpd.sh:59",
+        "github:76"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-001",
+      "group": "TLS",
+      "title": "Явный FTPS",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "TLS_CERT+TLS_KEY, trust test CA; AUTH TLS→USER/PASS→PBSZ0→PROTP→data",
+      "expected": "Успешный handshake и transfer; cert verified; control и data являются TLS sockets",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-002",
+      "group": "TLS",
+      "title": "TLS отсутствует при пустых vars",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Ни одна переменная не задана и отдельно обе пусты",
+      "expected": "Plain FTP работает; TLS не включён автоматически; новые ключи не генерируются",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:37",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-003",
+      "group": "TLS",
+      "title": "Только TLS_CERT",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Сертификат без TLS_KEY; отдельно cert-only PEM и PEM с embedded key",
+      "expected": "Из-за OR включается TLS; снять реальный отказ/работоспособность combined PEM, не предполагать одинаковый исход",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-004",
+      "group": "TLS",
+      "title": "Только TLS_KEY",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Только непустой TLS_KEY, cert path пустой",
+      "expected": "TLS включён, но нет корректного certificate pair: не ready; ожидаемая ошибка старта диагностируется",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-005",
+      "group": "TLS",
+      "title": "Отсутствующий mount",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Передать абсолютные host paths как TLS vars без bind mount",
+      "expected": "Нет рабочего TLS listener; logs/foreground diagnostic показывают недоступность cert; default FTP не должен тихо включиться",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:50",
+        "github:56",
+        "github:57"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-006",
+      "group": "TLS",
+      "title": "Не тот путь/тип файла",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Cert/key указывает на missing path, directory, empty file; каждый отдельно",
+      "expected": "Явный отказ старта, без plain fallback; негатив ограничен deadline",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-007",
+      "group": "TLS",
+      "title": "Повреждённый PEM",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Invalid certificate и отдельно invalid private key",
+      "expected": "Handshake/listener не считается ready; понятный диагностический артефакт",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-008",
+      "group": "TLS",
+      "title": "Несовпадающие cert/key",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Два различных RSA key pairs",
+      "expected": "Сервер не принимает успешный TLS с неправильной парой",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-009",
+      "group": "TLS",
+      "title": "Encrypted private key",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Ключ с passphrase без механизма её передачи",
+      "expected": "Не зависает с интерактивным запросом; отказ в пределах boot deadline",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-010",
+      "group": "TLS",
+      "title": "Read-only mount сертификатов",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "/certs:ro, корректные cert/key и минимальные UNIX permissions",
+      "expected": "FTPS работает; startup не изменяет cert/key contents/mode",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:57"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-011",
+      "group": "TLS",
+      "title": "Let's Encrypt symlinks",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Локально создать live/domain→../../archive/domain/*; mount всего tree ro и отдельно только live",
+      "expected": "Полное дерево работает; сломанные symlinks явно отказывают; не обращаться к реальному ACME",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:50",
+        "github:57"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-012",
+      "group": "TLS",
+      "title": "Fullchain",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Локальный CA→intermediate→leaf; серверу leaf+intermediate, клиент доверяет root",
+      "expected": "Клиент валидирует chain; leaf-only negative даёт verify error если intermediate недоступен",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-013",
+      "group": "TLS",
+      "title": "Недоверенный CA",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Клиент trust store не содержит issuer",
+      "expected": "Клиент отклоняет cert; этот отказ не выдавать за отсутствие TLS у сервера",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-014",
+      "group": "TLS",
+      "title": "Hostname mismatch",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Сертификат ftp.test, client verify_hostname=other.test при том же IP",
+      "expected": "Verification failure до передачи credentials/data",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-015",
+      "group": "TLS",
+      "title": "Expired/not-yet-valid",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Два cert с контролируемыми validity windows; client clock не менять",
+      "expected": "Verified client отклоняет оба; server boot может быть успешен и это не bug",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-016",
+      "group": "TLS",
+      "title": "ECDSA сертификат",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Вместо RSA использовать ECDSA P-256 cert/key, проверить real handshake+data",
+      "expected": "Снять совместимость rsa_* options с ECDSA на текущей сборке",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-017",
+      "group": "TLS",
+      "title": "TLS1.2",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "Ограничить min=max1.2; выполнить все data verbs",
+      "expected": "Handshake1.2 и защищённые transfers успешны с reuse",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:52",
+        "github:62"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-018",
+      "group": "TLS",
+      "title": "TLS1.3",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Отдельный client с session ticket support; handshake, затем transfers всеми 4 verbs",
+      "expected": "Handshake и data работают с reuse; baseline все 4 verbs подтверждены; не ограничиться handshake",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:52",
+        "github:62"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-019",
+      "group": "TLS",
+      "title": "TLS1.0 и 1.1 запрещены",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Legacy-capable client предлагает только 1.0 и отдельно 1.1; получить server alert",
+      "expected": "Оба отвергаются сервером; local no-protocols/no-ciphers не доказательство server-side rejection",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:52",
+        "github:62"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-020",
+      "group": "TLS",
+      "title": "SSLv2/SSLv3",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Совместимый legacy probe в изолированной сети; иначе explicit unsupported tooling",
+      "expected": "Не принимаются сервером; inability современного openssl проверить не считать PASS",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-021",
+      "group": "TLS",
+      "title": "Слабые cipher suites",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "TLS1.2 client с единственным слабым cipher и рабочий HIGH cipher контроль",
+      "expected": "Слабый не согласуется, strong работает; проверить влияние OpenSSL default security level отдельно",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-022",
+      "group": "TLS",
+      "title": "Plain login на TLS server",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "USER/PASS без AUTH TLS, raw control, без FTP_TLS auto-auth",
+      "expected": "Credentials не дают успешный plain login; force_local_logins_ssl работает",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-023",
+      "group": "TLS",
+      "title": "Plain data на TLS server",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "AUTH/login, затем PROTC или не делать PROTP; LIST/RETR/STOR",
+      "expected": "Защищённые данные обязательны; отказ без cleartext file content и без ложного 226",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-024",
+      "group": "TLS",
+      "title": "Session reuse положительный",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "Data TLS socket использует control SSL session; утверждать session_reused для TLS1.2",
+      "expected": "Transfer работает со стандартным require_ssl_reuse; не менять server config ради клиента",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-025",
+      "group": "TLS",
+      "title": "Session reuse отрицательный",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "Обычный FTP_TLS без session= на новом data socket при TLS1.2",
+      "expected": "Получен 522 session reuse required; после негативного клиента новый корректный клиент работает",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-026",
+      "group": "TLS",
+      "title": "TLS1.3 tickets",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "После control handshake обработать tickets, несколько data connections и новый control session",
+      "expected": "Reuse привязан к правильной control session; unsupported client явно отделён от server failure",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-027",
+      "group": "TLS",
+      "title": "Неверная последовательность PBSZ/PROT",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "PROTP до AUTH; PBSZ nonzero; PROT invalid; PBSZ0 до login",
+      "expected": "Корректный 5xx/предписанный state transition; нельзя получить plaintext data вместо TLS",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-028",
+      "group": "TLS",
+      "title": "Repeated AUTH TLS",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "AUTH TLS второй раз внутри защищённой control session",
+      "expected": "Отказ или документированное поведение без crash/снижения защиты",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-029",
+      "group": "TLS",
+      "title": "CCC downgrade",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "После AUTH/login попытаться CCC и последующие команды",
+      "expected": "Снять current capability; не должно быть незаметного перехода data в cleartext",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-030",
+      "group": "TLS",
+      "title": "Anonymous через TLS",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "tls4",
+      "recipe": "R-TLS",
+      "actions": "AUTH TLS, anonymous/ftp login",
+      "expected": "anonymous_enable=NO и allow_anon_ssl=NO сохраняют отказ",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:39",
+        "github:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-031",
+      "group": "TLS",
+      "title": "TLS active roles",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "tls-active2",
+      "recipe": "R-TLS",
+      "actions": "PORT/EPRT listener клиента принимает TCP, но запускает TLS client handshake с reuse",
+      "expected": "Server инициирует TCP; TLS роли не переворачиваются; оба режима проходят",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-032",
+      "group": "TLS",
+      "title": "Implicit FTPS и SFTP",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "TLS ClientHello без AUTH на 21; probe990/22 без публикации новых ports",
+      "expected": "Default не предоставляет implicit FTPS/SFTP; корректное объяснение отказа в docs; explicit21 работает",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:17"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-033",
+      "group": "TLS",
+      "title": "Renewal сертификата",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Заменить pair в mounted directory; сравнить fingerprints новых соединений до и после restart",
+      "expected": "Снять время перечитывания; после restart предъявляется новый cert; данные volume сохранены",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-034",
+      "group": "TLS",
+      "title": "Приоритет TLS CLI над config",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "Mount config с ssl_enable=NO/force_local_data_ssl=NO, передать TLS vars",
+      "expected": "Effective поведение отражает CLI overrides; plain login/data не разрешаются случайно",
+      "sources": [
+        "code:start_vsftpd.sh:71",
+        "github:40"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "TLS-035",
+      "group": "TLS",
+      "title": "Handshake timeout и мусор",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "self",
+      "recipe": "R-TLS",
+      "actions": "После 234 не завершать TLS или передать неверные records; затем новый valid client",
+      "expected": "Session закрыта за ограниченное время; listener жив и ресурсы освобождаются",
+      "sources": [
+        "code:start_vsftpd.sh:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-001",
+      "group": "FS",
+      "title": "Новый private home",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Fresh /ftp/alice отсутствует перед init; проверить stat и доступ вторым user",
+      "expected": "Mode750; owner correct UID/GID; unrelated group не читает содержимое",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-002",
+      "group": "FS",
+      "title": "Существующий home",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Seed directory с 0700,0755,0777; entrypoint не создаёт его заново",
+      "expected": "Снять сохранение mode: mkdir -p -m не chmod existing; намерение #70 не считать enforced для старых dirs",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-003",
+      "group": "FS",
+      "title": "Home, уже созданный adduser",
+      "priority": "P0",
+      "expectation_type": "known-defect",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Parent существует до init; также alice и bob по очереди в /ftp; затем mkdir -m750 -p",
+      "expected": "Desired mode750 для каждого home; baseline второй /ftp/bob и /home/alice имеют 2755",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-004",
+      "group": "FS",
+      "title": "Изоляция unrelated users",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Alice и bob разные группы; каждый пытается LIST/CWD/RETR/STOR/DELE в home другого; обе последовательности USERS",
+      "expected": "Все запрещённые операции отвергнуты UNIX permissions; bytes не изменены; baseline2755 выделен FS-003",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:19",
+        "github:70",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-005",
+      "group": "FS",
+      "title": "Общая primary group",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Alice и bob в одном GID; alice home0750, files0644",
+      "expected": "Bob читает при group rx, не пишет без w; не утверждать полную изоляцию при shared group",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:21",
+        "github:42",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-006",
+      "group": "FS",
+      "title": "Chroot по умолчанию отсутствует",
+      "priority": "P0",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "CWD /, CDUP из home, чтение специально созданного world-readable marker вне home",
+      "expected": "Это разрешено текущим config; зафиксировать ограничение; не закреплять как желаемую security policy",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:19",
+        "github:22",
+        "github:24",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-007",
+      "group": "FS",
+      "title": "Custom chroot",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Mount config с chroot_local_user=YES и allow_writeable_chroot=YES",
+      "expected": "PWD=/; CDUP и ../ не покидают jail; marker снаружи недоступен; относительный upload работает",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:19",
+        "github:22",
+        "github:24",
+        "github:60"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-008",
+      "group": "FS",
+      "title": "Абсолютные paths после chroot",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Повторить #23: home/test/cf и путь /test/cf/file.zip против /file.zip",
+      "expected": "В jail абсолютный path начинается в home, старый host-style path может получить 553; относительный путь работает",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:23"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-009",
+      "group": "FS",
+      "title": "Chroot с writable root без разрешения",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "chroot_local_user=YES, allow_writeable_chroot=NO; home user-writable",
+      "expected": "Явный отказ login, не случайный data timeout; secure variant root-owned root+upload subdir работает",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-010",
+      "group": "FS",
+      "title": "Symlink в пределах home",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Ссылка на собственный файл/subdir и broken link",
+      "expected": "Внутренний target доступен по permissions; broken link даёт отказ; target bytes не меняются",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-011",
+      "group": "FS",
+      "title": "Symlink наружу",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Default и chroot fixture, ссылка на test marker вне home",
+      "expected": "Default подчиняется UNIX permissions; chroot не позволяет выйти через symlink",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:19",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-012",
+      "group": "FS",
+      "title": "Umask files/directories",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "STOR файла и MKD каталога; stat через docker exec",
+      "expected": "Default file0644 и dir0755 при обычном filesystem; home0750 — отдельный объект, не umask для MKD",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:21",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-013",
+      "group": "FS",
+      "title": "Custom umask",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Mount local_umask=077; повторить STOR/MKD",
+      "expected": "Files0600, dirs0700; настройка влияет на новые объекты, не меняет existing",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:21"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-014",
+      "group": "FS",
+      "title": "Bind mount read/write",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Host tempdir→/data/alice; USERS home=/data/alice",
+      "expected": "FTP upload виден host с теми же bytes и numeric owner; host file доступен FTP",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:35",
+        "github:79",
+        "github:80"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-015",
+      "group": "FS",
+      "title": "Named volume persistence",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Named volume в home; upload, remove server, recreate same volume+UID/GID",
+      "expected": "Файл сохраняет bytes/mode/owner и доступен после нового login",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:35",
+        "github:80"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-016",
+      "group": "FS",
+      "title": "Read-only mount",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Подготовить home с correct numeric owner, existing file; mount:ro",
+      "expected": "LIST/RETR работают; STOR/APPE/DELE/RNTO/MKD/SITE CHMOD отказывают; данные не меняются",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:64"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-017",
+      "group": "FS",
+      "title": "Недостаточные права родителя",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Parent0700 root и user home ниже него",
+      "expected": "Login/CWD или access даёт permission error; новый writable-path контроль проходит",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:65",
+        "github:79"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-018",
+      "group": "FS",
+      "title": "Чужие nested files",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Root-owned nested readonly file в user-owned home",
+      "expected": "Startup chown меняет только home, не рекурсивно; изменение nested file не обещано",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:79"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-019",
+      "group": "FS",
+      "title": "Shared web volume",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "UID33/GID33 и отдельно UID10000/GID82; nested files заданы по числам",
+      "expected": "Доступ определяется реальными numeric ID и mode; имя www-data в разных images не заменяет числовое совпадение",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:31",
+        "github:42",
+        "github:79"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-020",
+      "group": "FS",
+      "title": "NFS/root-squash и сетевой FS",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Dedicated runner с NFS или synthetic chown/mkdir EIO fixture",
+      "expected": "Error не маскируется успешным boot; host ownership не меняется случайно; dependency явно записана",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:65"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-021",
+      "group": "FS",
+      "title": "Нет места",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Маленький отдельный tmpfs volume; заполнить во время STOR",
+      "expected": "Получен bounded error, файл не объявлен успешно полным; после освобождения места новый upload проходит",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-022",
+      "group": "FS",
+      "title": "Исчерпаны inodes",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Отдельный filesystem смаленьким inode budget; STOR/MKD",
+      "expected": "Корректный отказ без daemon crash и без удаления existing data",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-023",
+      "group": "FS",
+      "title": "Недоступный home",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Home path — regular file, broken symlink или read-only missing directory; каждый вариант",
+      "expected": "Boot/login отказывает диагностируемо; no fallback to / или чужой home",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:65"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-024",
+      "group": "FS",
+      "title": "HOME=/ исистемные каталоги",
+      "priority": "P2",
+      "expectation_type": "decision",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Только одноразовый контейнер; USERS с home / и/etc",
+      "expected": "Требуется решение запретить такие home; до решения characterization без изменения host paths",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-025",
+      "group": "FS",
+      "title": "Общий home двух users",
+      "priority": "P1",
+      "expectation_type": "decision",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Same path, разные UID/GID; обе последовательности USERS",
+      "expected": "Последний chown может лишить первого доступа; зафиксировать и определить поддерживаемую модель shared dir",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:42",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-026",
+      "group": "FS",
+      "title": "Нет volume",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Upload, docker restart, затем remove+new container",
+      "expected": "Restart сохраняет writable-layer файл; recreate без volume файл теряет; это разные сценарии",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:8",
+        "github:59",
+        "github:74"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-027",
+      "group": "FS",
+      "title": "Отсутствие anonymous volume",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Создать контейнер без -v; inspect Mounts и Docker volumes до/после",
+      "expected": "/ftp/ftp volume не создаётся автоматически; тестудаляет только свои ресурсы",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:59",
+        "github:74"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FS-028",
+      "group": "FS",
+      "title": "Setgid/ACL/sticky inheritance",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-FS",
+      "actions": "Предсозданный shared dir с setgid и отдельно default ACL; STOR/MKD",
+      "expected": "Снять наследование groups/modes на реальном FS; не требовать root:root всюду",
+      "sources": [
+        "code:start_vsftpd.sh:52",
+        "code:vsftpd.conf:71",
+        "github:21",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-001",
+      "group": "LIFE",
+      "title": "Fresh start",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Новый контейнер, restart policy=no; pidfile, listener, login и roundtrip",
+      "expected": "Ready ≤30 s, затем остаётся ready ≥5 s; PID файла относится к главному listener",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:11",
+        "github:26",
+        "github:36",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-002",
+      "group": "LIFE",
+      "title": "QUIT не останавливает daemon",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Login, upload, QUIT; проверить container state и ещё один login",
+      "expected": "Контейнер не рестартует, RestartCount=0; главный PID не меняется",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:15",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-003",
+      "group": "LIFE",
+      "title": "Abrupt disconnect",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "100 подключений с close без QUIT до/после login, часть одновременно",
+      "expected": "Listener жив; нет непредусмотренного container exit и роста zombies",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:15",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-004",
+      "group": "LIFE",
+      "title": "Ранний клиент при startup",
+      "priority": "P0",
+      "expectation_type": "known-defect",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Новый контейнер; непрерывные control connect/close с момента появления 21; повторить 100 launches",
+      "expected": "Short-lived client PID не выбран monitor; все запуски стабильно alive; baseline ранняя сессия сопровождалась exit",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-005",
+      "group": "LIFE",
+      "title": "100 запусков без клиентов",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Sequential fresh launches без early readiness TCP до создания pidfile; затем full smoke",
+      "expected": "Нет недетерминированного false exit; сохранить каждый failed launch без скрытого retry",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:48",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-006",
+      "group": "LIFE",
+      "title": "Restart default home",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "USERS home /ftp/alice; upload, docker restart same container, login",
+      "expected": "Account воссоздан, data сохранены, credentials из env действуют, container stable",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:8",
+        "github:13",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-007",
+      "group": "LIFE",
+      "title": "Restart custom home",
+      "priority": "P0",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "/home/alice/dir; upload и restart same container",
+      "expected": "Intended: account idempotent; может дать adduser user in use, т.к. cleanup смотрит только /ftp/; записать password state",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:38",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-008",
+      "group": "LIFE",
+      "title": "Смена пароля и restart",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Изменить пароль через chpasswd; restart для default home и custom home отдельно",
+      "expected": "Default /ftp account пересоздаётся с env password; custom home может сохранить changed password; зафиксировать асимметрию",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:8",
+        "github:38"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-009",
+      "group": "LIFE",
+      "title": "Пересоздание с новыми credentials",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Remove container, сохранить volume; новый USERS с новым password",
+      "expected": "Старый password не работает, новый работает; данные volume сохранены",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:8",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-010",
+      "group": "LIFE",
+      "title": "Изменение списка пользователей",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Recreate с alice вместо alice+bob; тот же volume; тот же UID",
+      "expected": "Bob не логинится; наличие старого home/file не создаёт account автоматически",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:30"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-011",
+      "group": "LIFE",
+      "title": "docker stop idle",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "TERM через docker stop -t10; monotonic duration и docker events",
+      "expected": "Listener и container завершаются до kill deadline; нет обязательного SIGKILL; StopSignal фактического image учтён",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:16",
+        "github:25",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-012",
+      "group": "LIFE",
+      "title": "Stop во время transfer",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Большой STOR/RETR удержан barrier; stop -t10",
+      "expected": "Ограниченное завершение без зависшего container; клиент видит отказ; после restart не заявлять incomplete file полным",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:16",
+        "github:36",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-013",
+      "group": "LIFE",
+      "title": "docker kill",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "SIGKILL одноразовому server",
+      "expected": "Container exited; старые client sockets закрыты; recreate с volume работоспособен",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-014",
+      "group": "LIFE",
+      "title": "Смерть listener",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Найти по socket/control main PID, kill его через docker exec; не kill случайный session",
+      "expected": "pidproxy завершает container за ограниченное время; container Up без daemon — FAIL; exit0 не равен healthy",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-015",
+      "group": "LIFE",
+      "title": "Смерть session worker",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Подключить 2 clients, убить PID одной session",
+      "expected": "Main listener и второй client живы; новый login проходит",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:15",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-016",
+      "group": "LIFE",
+      "title": "Смерть pidproxy/tini",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "По отдельности завершить supervisor и PID1 в disposable container",
+      "expected": "Зафиксировать exit semantics; не остаётся running service без supervisor; сценарий не заменяет kill listener",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-017",
+      "group": "LIFE",
+      "title": "PID file корректен",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Сравнить /var/run/vsftpd/vsftpd.pid, proc cmdline, process parent и listener до/после connections",
+      "expected": "Файл содержит целое PID главного daemon, не worker и не stale/reused PID",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-018",
+      "group": "LIFE",
+      "title": "PID file missing/empty/stale",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Seed pidfile via volume/custom derived fixture, затем обычный startup",
+      "expected": "Файл обновлён; stale PID не является готовностью; ошибка чтения диагностирована",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-019",
+      "group": "LIFE",
+      "title": "Zombie/FD/process leak",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "1000 коротких sessions и 100 transfers; после grace сравнить процессы/FD с baseline",
+      "expected": "Нет монотонного роста; tini reaps children; допустимые limits зафиксировать до run",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:36",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-020",
+      "group": "LIFE",
+      "title": "Custom command после init",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "docker run IMAGE sh -c 'id alice; exit 7'; отдельный 0",
+      "expected": "Users созданы до command; vsftpd не стартует; exitcode точно 7/0, argv не склеены",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:3",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-021",
+      "group": "LIFE",
+      "title": "Custom command с arguments",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Передать arguments с spaces, $, ;, пустой string через subprocess argv",
+      "expected": "exec \"$@\" сохраняет границы аргументов; shell не интерпретирует данные без явного sh -c",
+      "sources": [
+        "code:start_vsftpd.sh:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-022",
+      "group": "LIFE",
+      "title": "Пустой первый command argument",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "docker run IMAGE \"\" next",
+      "expected": "Снять ветвь по [ ! -z \"$1\" ]; не обещать исполнение пустого argv",
+      "sources": [
+        "code:start_vsftpd.sh:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-023",
+      "group": "LIFE",
+      "title": "Non-root runtime",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "docker run --user 10000:10000 без изменений образа",
+      "expected": "Current startup требует управления accounts/chown: поддержка non-root не заявлена; явный отказ вместо false ready",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-024",
+      "group": "LIFE",
+      "title": "Read-only rootfs",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "--read-only без tmpfs, затем с заданными writable paths",
+      "expected": "Снять требуемые пути passwd/shadow/home/run; полностью read-only runtime не обещан",
+      "sources": [
+        "code:start_vsftpd.sh:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-025",
+      "group": "LIFE",
+      "title": "pidfd fallback",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "Отдельный Docker seccomp profile возвращает ENOSYS и EPERM для pidfd_open",
+      "expected": "pidproxy polling работает, stop/crash detection укладываются в увеличенный budget; warning не равен fatal error",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "LIFE-026",
+      "group": "LIFE",
+      "title": "Низкий лимит resources",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "control2",
+      "recipe": "R-LIFECYCLE",
+      "actions": "--pids-limit, --memory и ulimit nofile отдельными fixtures",
+      "expected": "Нагрузка даёт ограниченный отказ; OOMKilled/FD exhaustion различимы; после recreate файлы volume целы",
+      "sources": [
+        "code:start_vsftpd.sh:75",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-001",
+      "group": "CFG",
+      "title": "Mount неизменённого config",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Bind root-owned vsftpd.conf:ro в /etc/vsftpd/vsftpd.conf",
+      "expected": "Поведение default FTP/TLS сохраняется, config bytes не меняются",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:19",
+        "github:83"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-002",
+      "group": "CFG",
+      "title": "Banner",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "ftpd_banner=Welcome FTP Server; проверить первый multiline/singleline220",
+      "expected": "Баннер соответствует config; env CONF_FTPD_BANNER сам по себе сейчас не меняет его",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:83"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-003",
+      "group": "CFG",
+      "title": "Read-only service",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "write_enable=NO; LIST/RETR и отдельно STOR/APPE/DELE/RNTO/MKD/RMD/SITE CHMOD",
+      "expected": "Чтение разрешено, mutations отвергнуты независимо от UNIX write rights",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:64"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-004",
+      "group": "CFG",
+      "title": "Per-user read-only",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "user_config_dir с alice write_enable=NO и bob YES; filesystem обоим writable",
+      "expected": "Alice read-only, bob read/write; users являются local accounts, не virtual users",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:64"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-005",
+      "group": "CFG",
+      "title": "Disable passive",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "pasv_enable=NO, PORT/EPRT плюс PASV/EPSV",
+      "expected": "Active остаётся рабочим; passive commands отвергнуты; false env vars не меняют поведение",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:39"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-006",
+      "group": "CFG",
+      "title": "Force dotfiles",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "force_dot_files=YES; NLST/LIST для visible и.hidden",
+      "expected": "Dotfile появляется и удаляется; default кейс остаётся characterization",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:47"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-007",
+      "group": "CFG",
+      "title": "Timezone default",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Файл с fixed UTC mtime; LIST/MDTM без TZ config",
+      "expected": "MDTM UTC; LIST сравнивать как time semantics, не формат/местную timezone клиента",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:33"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-008",
+      "group": "CFG",
+      "title": "Timezone через mount",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "/etc/localtime:ro с fixture zoneinfo и use_localtime=YES; known winter/summer timestamps",
+      "expected": "LIST отражает заданную zone/DST, MDTM UTC; не требовать установки tzdata в runtime",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:33",
+        "github:41"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-009",
+      "group": "CFG",
+      "title": "Custom control port",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "listen_port=2121 в config; publish host22121→container2121",
+      "expected": "Control2121 работает,21 не слушает; passive и active transfers работают",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:84"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-010",
+      "group": "CFG",
+      "title": "Приоритет MIN/MAX",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Config задаёт 30000..30004, env задаёт 31000..31004",
+      "expected": "CLI-опции entrypoint побеждают; raw227/229 port31000..31004",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-011",
+      "group": "CFG",
+      "title": "Приоритет ADDRESS",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Config pasv_address=A; env ADDRESS=B; корректный test DNS",
+      "expected": "PASV advertises B; без ADDRESS используется A",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:4",
+        "github:5"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-012",
+      "group": "CFG",
+      "title": "Столкновение listen/background",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Config listen=NO или background=NO; стандартный entrypoint",
+      "expected": "Зафиксировать несовместимость с supervision/standalone; не выставлять ready лишь по container Up",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:7",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-013",
+      "group": "CFG",
+      "title": "Invalid/unknown config",
+      "priority": "P1",
+      "expectation_type": "hardening",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Unknown key, syntax error, недопустимое YES/NO, missing config",
+      "expected": "Запуск функционально не ready, ошибка сохранена; nonzero exit желаем",
+      "sources": [
+        "code:vsftpd.conf:1"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-014",
+      "group": "CFG",
+      "title": "Ownership config",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Root-owned ro file и user-writable file отдельными variants",
+      "expected": "Позитивный root-owned работает; security-проверки vsftpd не обходятся chmod777",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:19"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-015",
+      "group": "CFG",
+      "title": "Anonymous custom profile",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "anonymous_enable=YES, anon root root-owned, download fixture; upload по умолчанию запрещён",
+      "expected": "Только явный custom config включает anonymous; read-only проверить через FTP, TLS отдельно allow_anon_ssl",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:39",
+        "github:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-016",
+      "group": "CFG",
+      "title": "Client limits/timeouts",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "max_clients=2, max_per_ip=1, idle_session_timeout=3, data_connection_timeout=3 раздельно",
+      "expected": "Точные limit/timeout проверяются без ожидания 10 минут; после освобождения ресурса доступ возвращается",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-017",
+      "group": "CFG",
+      "title": "FXP default rejected",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Два server и третий controller; попытка PASV на dst→PORT на src→STOR/RETR",
+      "expected": "Default защита против third-party data не ослаблена; positive FXP только в следующем custom case",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CFG-018",
+      "group": "CFG",
+      "title": "FXP explicit custom",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-CONFIG",
+      "actions": "Изолированная сеть: pasv_promiscuous=YES у dst, port_promiscuous=YES у src; source/dest переставить",
+      "expected": "Данные идут между серверами, hash совпадает;100 files, tiny port pool recover; TLS-FXP отдельно не обещан",
+      "sources": [
+        "code:vsftpd.conf:1",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-001",
+      "group": "OBS",
+      "title": "Transfer logs stdout",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Успешный login/upload/download/delete; docker logs после окончания",
+      "expected": "Есть user/path/operation и bytes для transfer; PID1 stdout доступен, не требуется tail -F",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:7",
+        "github:36",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-002",
+      "group": "OBS",
+      "title": "Login failure logs",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Неверный пароль/unknown user; valid login после",
+      "expected": "Диагностика появляется в docker logs, listener работает; полную строку пароля не печатать",
+      "sources": [
+        "code:vsftpd.conf:18"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-003",
+      "group": "OBS",
+      "title": "Нет утечки credentials",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Valid/invalid logins с unique canary passwords; искать их в stdout/stderr/артефактах runner",
+      "expected": "Пароль, TLS private key и полный USERS не сохраняются в логах/транскрипте; PASS redacted",
+      "sources": [
+        "code:vsftpd.conf:18"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-004",
+      "group": "OBS",
+      "title": "Нет ложного ready",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Server контейнер Up, но сломанный ADDRESS/cert/config; run functional health probe",
+      "expected": "Health probe падает; артефакты различают container-running/listener/login/data-ready",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:11",
+        "github:49",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-005",
+      "group": "OBS",
+      "title": "Ошибки запуска доступны",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Для неуспешного daemon start собрать stdout,stderr,exit,pidfile,ps и config без secrets",
+      "expected": "Причина доступна; если background теряет stderr, foreground diagnostic отдельным secondary run",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:11",
+        "github:48",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-006",
+      "group": "OBS",
+      "title": "Логирование под нагрузкой",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "1000 mixed transfers и параллельные новые logins; small passive range и wide контроль",
+      "expected": "Нет случайного 500 OOPS logfile; saturation отдельно от ошибки открытия /proc/1/fd/1",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-007",
+      "group": "OBS",
+      "title": "Права log destination",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Custom config недоступный logfile и валидный writable file контроль",
+      "expected": "Явный отказ/лог причины; не принять данные без ожидаемого audit trail",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-008",
+      "group": "OBS",
+      "title": "Driver Docker logs",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Dedicated jobs json-file и local; optional none/Syslog",
+      "expected": "/proc/1/fd/1 logging не убивает service; отсутствие доступных docker logs при driver не равно отсутствию transfer",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-009",
+      "group": "OBS",
+      "title": "Длительная mixed нагрузка",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "30min FTP/FTPS, active/passive,8clients, files checksummed, tiny/wide range",
+      "expected": "Нет corruption,leaks,unexpected restart; report latencies без универсального throughput порога",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:68",
+        "github:71",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "OBS-010",
+      "group": "OBS",
+      "title": "Isolation harness resources",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "control2",
+      "recipe": "R-OBS",
+      "actions": "Запустить 2 полных набора параллельно с unique Docker resources",
+      "expected": "Нет port/name/volume conflict; cleanup только task-owned objects; повторный запуск работает",
+      "sources": [
+        "code:vsftpd.conf:18",
+        "github:46",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-001",
+      "group": "DOC",
+      "title": "docker run example",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Выполнить первый README пример с реальным ADDRESS и local image вместо public domain",
+      "expected": "Login one/1234 и data работают; shell line continuations корректны",
+      "sources": [
+        "code:README.md:5",
+        "github:1",
+        "github:12",
+        "github:27"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-002",
+      "group": "DOC",
+      "title": "FTPS example",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Разобрать README command, заменить ACME tree локальным fixture, выполнить FTP часть",
+      "expected": "Mount сертификатов есть, TLS paths внутри контейнера, quoting/backslashes валидны; real ACME не запускать",
+      "sources": [
+        "code:README.md:5",
+        "github:40",
+        "github:44",
+        "github:50",
+        "github:51",
+        "github:54",
+        "github:57",
+        "github:58"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-003",
+      "group": "DOC",
+      "title": "Compose mapping env",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "services.ftp.environment.USERS: \"alice|test-a bob|test-b\"; quoted ports",
+      "expected": "Compose config передаёт USERS без literal quotes; оба login и roundtrip работают",
+      "sources": [
+        "code:README.md:5",
+        "github:14",
+        "github:63"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-004",
+      "group": "DOC",
+      "title": "Compose list env",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "environment: ['USERS=alice|test-a bob|test-b']; ADDRESS отдельно",
+      "expected": "Результат эквивалентен mapping форме; literal quote не попадает в username",
+      "sources": [
+        "code:README.md:5",
+        "github:14",
+        "github:63"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-005",
+      "group": "DOC",
+      "title": "Ошибка list quoting из README",
+      "priority": "P0",
+      "expectation_type": "known-defect",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "- USERS=\"one|1234\"; docker compose config/inspect actual env",
+      "expected": "Known doc defect: кавычки часть value; desired README пример исправить в будущей задаче",
+      "sources": [
+        "code:README.md:5",
+        "github:14",
+        "github:55",
+        "github:61",
+        "github:63"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-006",
+      "group": "DOC",
+      "title": "Quoted control mapping",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "'21:21' и '2121:21'; compose config + docker inspect",
+      "expected": "Container port точно 21, не 1281; современный Compose тест не притворяется YAML1.1 parse",
+      "sources": [
+        "code:README.md:5",
+        "github:29",
+        "github:61",
+        "github:76"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-007",
+      "group": "DOC",
+      "title": "Compose skeleton README",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Обернуть snippet в services:, заменить volumes:-... реальным mount",
+      "expected": "Пример фрагмент; полный пример должен валидироваться Composev2; placeholder не исполнять",
+      "sources": [
+        "code:README.md:5",
+        "github:61"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-008",
+      "group": "DOC",
+      "title": "Env file",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Compose env_file и docker run --env-file; unquoted values; отдельно quoted values",
+      "expected": "Снять различия парсеров/версий; bytes USERS проверять в контейнере, не предполагать одинаковую обработку quotes",
+      "sources": [
+        "code:README.md:5",
+        "github:55"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-009",
+      "group": "DOC",
+      "title": "Dollar interpolation",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Compose password с dollar, doubled-dollar и variable reference; значение отлично от host env",
+      "expected": "Exact password доходит до сервера или выявлен ошибочный Compose escaping; различать два parser",
+      "sources": [
+        "code:README.md:5",
+        "github:34",
+        "github:55"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-010",
+      "group": "DOC",
+      "title": "Все USERS примеры README",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Пять примеров из README отдельными fresh containers",
+      "expected": "Все документированные комбинации создают правильные users/home/UID/GID и дают upload",
+      "sources": [
+        "code:README.md:5",
+        "github:21",
+        "github:31",
+        "github:42"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-011",
+      "group": "DOC",
+      "title": "Volumes example",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Bind и named volume с USERS home совпадающим с target",
+      "expected": "Host/volume данные видны FTP, survive recreate; EXPOSE не используется для дисков",
+      "sources": [
+        "code:README.md:5",
+        "github:35",
+        "github:80"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-012",
+      "group": "DOC",
+      "title": "Документирование границ",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Сверить docs с кодом:6 runtime env vars, explicit FTPS, no chroot, no SFTP, defaults",
+      "expected": "Неработающие CONF_/_FILE/LISTEN_PORT/TZ обещания не попадают в current API",
+      "sources": [
+        "code:README.md:5",
+        "github:17",
+        "github:33",
+        "github:39",
+        "github:45",
+        "github:73",
+        "github:75",
+        "github:81",
+        "github:84"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "DOC-013",
+      "group": "DOC",
+      "title": "Лицензия",
+      "priority": "P2",
+      "expectation_type": "decision",
+      "mode_set": "startup",
+      "recipe": "R-DOC",
+      "actions": "Проверить tracked LICENSE/COPYING/README license; source inventory",
+      "expected": "На исследуемом SHA license нет; документационный backlog без выдуманной лицензии или runtime assertion",
+      "sources": [
+        "code:README.md:5",
+        "github:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-001",
+      "group": "CI",
+      "title": "CI вызывает functional tests",
+      "priority": "P0",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Проверить workflow для PR:build image, затем pytest/sut, propagated exit code",
+      "expected": "Job падает при реальном data failure; текущий build-only workflow этого не гарантирует",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-002",
+      "group": "CI",
+      "title": "Failing sut не скрыт",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Контролируемый failing test в fixture workflow, без push в реальный репозиторий",
+      "expected": "Ненулевой exit доходит до Actions; нет ||true/скрытых retry",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-003",
+      "group": "CI",
+      "title": "Fork PR без registry secrets",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Workflow analysis/actionlint и read-only тестовый job",
+      "expected": "PR test не использует DockerHub secrets/push; runtime доступен без publish credentials",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-004",
+      "group": "CI",
+      "title": "Release после tests",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Проанализировать needs:test, event guard, master/path filters",
+      "expected": "Publishing невозможен на PR/при failed tests; сам publish не исполнять в этой задаче",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-005",
+      "group": "CI",
+      "title": "Matrix architectures",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Проверить 4 platforms и job results отдельно",
+      "expected": "Отсутствующая platform не прячется под одним amd64 green job",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:10",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-006",
+      "group": "CI",
+      "title": "Версии и digest",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Записать git SHA,image ID,base+client digest,package versions; выполнять по IMAGE_REF",
+      "expected": "Latest не является неизменяемой версией; rebuild может получить новые APK deps",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:23",
+        "github:53"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-007",
+      "group": "CI",
+      "title": "Failure artifacts",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Намеренный wrong ADDRESS или known UID bug",
+      "expected": "JUnit/logs/transcript/pid/socket config приложены без password; cleanup срабатывает; failure не называется skip",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:46",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "CI-008",
+      "group": "CI",
+      "title": "Trigger тестовых изменений",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "startup",
+      "recipe": "R-CI",
+      "actions": "Изменить только tests/ или workflow в modelled push/PR payload",
+      "expected": "PR тестируется; future push path filter учитывает tests отдельно от publish trigger",
+      "sources": [
+        "code:.github/workflows/docker-publish-image.yml:23",
+        "github:20"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-001",
+      "group": "COMPAT",
+      "title": "Два независимых клиента",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Core8 матрица на Python exact client; повтор roundtrip через curl/libcurl",
+      "expected": "Совпадают data hash и verb trace; один клиент не маскирует bug другого",
+      "sources": [
+        "code:README.md:32",
+        "github:6",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-002",
+      "group": "COMPAT",
+      "title": "FileZilla",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "FTP/explicit FTPS × active/passive, verify cert, reconnect, upload directory",
+      "expected": "Transfer и listing успешны; сохранить версию/режим, не скриншот одного login",
+      "sources": [
+        "code:README.md:32",
+        "github:4",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-003",
+      "group": "COMPAT",
+      "title": "lftp mirror",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Дерево обычных/dotfiles/UTF8, mirror upload/download, resume, deletes",
+      "expected": "Hash дерева совпадает; hidden file policy задана, auto fallback виден",
+      "sources": [
+        "code:README.md:32",
+        "github:47"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-004",
+      "group": "COMPAT",
+      "title": "Java Apache Commons Net",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "FTPClient и FTPSClient, active/passive, remote verification, completePendingCommand",
+      "expected": "Непустой upload и RETR, финальный 226; TLS reuse client limitation явная",
+      "sources": [
+        "code:README.md:32",
+        "github:23",
+        "github:46",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-005",
+      "group": "COMPAT",
+      "title": "mircstats regression",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Изолированная Windows VM:normal/passive, plain/TLS если поддерживает; nonempty fixture",
+      "expected": "Причина 0-byte/отсутствия файла локализована по trace; unsupported TLS не server failure",
+      "sources": [
+        "code:README.md:32",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-006",
+      "group": "COMPAT",
+      "title": "Windows Explorer/старый ftp",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Plain FTP, ASCII filenames/content; записать client capabilities",
+      "expected": "Не обещать FTPS/EPSV без поддержки клиента; binary content не усекать",
+      "sources": [
+        "code:README.md:32",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-007",
+      "group": "COMPAT",
+      "title": "Testcontainers/GitLab/GitHub services",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Real CI DinD/remote daemon:dynamic control+fixed passive range,address снаружи",
+      "expected": "Login,list,nonempty upload/retr/delete работают; одного withExposedPorts(21) недостаточно",
+      "sources": [
+        "code:README.md:32",
+        "github:46",
+        "github:48"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "COMPAT-008",
+      "group": "COMPAT",
+      "title": "RHEL7/8 host",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "self",
+      "recipe": "R-COMPAT",
+      "actions": "Dedicated runner, current Docker, explicit firewall rules,default seccomp и pidfd-deny fixture",
+      "expected": "Отличать blocked ports/ENOSYS/EPERM от daemon crash; system firewall не отключать целиком",
+      "sources": [
+        "code:README.md:32",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-001",
+      "group": "FUT",
+      "title": "Текущие неизвестные env ignored",
+      "priority": "P0",
+      "expectation_type": "characterization",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "CONF_FTPD_BANNER, CONF_SET_PARMS, anonymous_enable, LISTEN_PORT, SSL=true отдельно",
+      "expected": "Current master их не обрабатывает; original banner/listen21/anonymousNO/TLSdisabled сохраняются",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:37",
+        "github:39",
+        "github:45",
+        "github:46",
+        "github:75",
+        "github:81",
+        "github:84"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-002",
+      "group": "FUT",
+      "title": "USERS_FILE basic",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "После merge PR73:secret file с одним/несколькими accounts и newline; нет USERS",
+      "expected": "Users читаются из file; правильные login; secret не выводится",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:73"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-003",
+      "group": "FUT",
+      "title": "USERS и USERS_FILE конфликт",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "После PR73:оба nonempty, unreadable/missing file,empty file отдельно",
+      "expected": "Conflict explicit nonzero; fileread error не превращается в default password",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:73"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-004",
+      "group": "FUT",
+      "title": "CONF_ update/add",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "После merge45/81:existing/commented/missing key; UPPER/lowercase suffix",
+      "expected": "Effective value один; не остаются активные дубликаты; casing политика фиксирована",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-005",
+      "group": "FUT",
+      "title": "CONF_ idempotency",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Одинаковый env при 10 restart; changed value при следующем recreate",
+      "expected": "Итог config одинаковый без дублей/роста файла; новые values применены",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-006",
+      "group": "FUT",
+      "title": "CONF_ special values",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Values с spaces,=,|,&,/,backslash,newline,sed metacharacters; argv/env",
+      "expected": "Literal value сохранено или явно rejected; нет regex/sed injection и порчи других keys",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-007",
+      "group": "FUT",
+      "title": "CONF_ error paths",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Config missing/ro/unwritable,tmpfile/copy/write failure,duplicate key,case collision",
+      "expected": "Nonzero; original config не повреждён; temp files cleaned; pipeline errors не скрыты",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-008",
+      "group": "FUT",
+      "title": "CONF_ precedence",
+      "priority": "P1",
+      "expectation_type": "decision",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "CONF_PASV_MIN_PORT/ADDRESS/SSL против MIN_PORT/ADDRESS/TLS vars",
+      "expected": "Утвердить однозначный приоритет; проверять effective protocol, не только contents file",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:45",
+        "github:81"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-009",
+      "group": "FUT",
+      "title": "ENV anonymous/read-only",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "После#75:anonymous enabled read-only,disabled,invalid,local users+TLS combinations",
+      "expected": "Explicit login/data policy; anonymous writes запрещены по базовому contract",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:39",
+        "github:75"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-010",
+      "group": "FUT",
+      "title": "ENV listen port",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "После#84:unset,empty,valid,invalid,conflict,mapping,TLS,active/passive",
+      "expected": "Значение определяет control socket; invalid port failfast; source20 не путать с control",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:84"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-011",
+      "group": "FUT",
+      "title": "Timezone ENV",
+      "priority": "P1",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Если примут аналог PR41:TZ valid/invalid,UTC,DST,localtime mount precedence",
+      "expected": "Утверждённая timezone политика; current master не вызывает отсутствующий setup-timezone",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:33",
+        "github:41"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-012",
+      "group": "FUT",
+      "title": "Private-home policy",
+      "priority": "P1",
+      "expectation_type": "decision",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Решить для new/existing/bind/shared group:chmod750 или preserve; chroot default отдельно",
+      "expected": "Выбранный contract проверяется на каждом FS profile; existing0777 нельзя назвать private",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:19",
+        "github:70",
+        "github:82"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-013",
+      "group": "FUT",
+      "title": "Graceful startup failure",
+      "priority": "P1",
+      "expectation_type": "decision",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Решить exit code и stderr при vsftpd DNS/cert/config/user failure",
+      "expected": "Nonzero без functionally-dead Up; monitor указывает listener; desired fix не называть implemented",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:11",
+        "github:38",
+        "github:48",
+        "github:49",
+        "github:56"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FUT-014",
+      "group": "FUT",
+      "title": "Version tags/license",
+      "priority": "P2",
+      "expectation_type": "future",
+      "mode_set": "self",
+      "recipe": "R-FUTURE",
+      "actions": "Если появится release policy:semver/digest/metadata/license",
+      "expected": "Проверять только принятую политику; не выдумывать release versions или правовой текст",
+      "sources": [
+        "code:start_vsftpd.sh:19",
+        "github:23",
+        "github:53",
+        "github:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-001",
+      "group": "PAR",
+      "title": "Две сессии одного пользователя",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "2 clients одновременно STOR разных файлов; barrier до передачи данных",
+      "expected": "Оба файла имеют правильные bytes; ответы/рабочие каталоги не перемешаны",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-002",
+      "group": "PAR",
+      "title": "Два пользователя одновременно",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "Alice/bob, private homes; upload/list/download параллельно",
+      "expected": "Каждый видит свои данные; credentials и ownership не перепутаны",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:34",
+        "github:42",
+        "github:70"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-003",
+      "group": "PAR",
+      "title": "Разные security/mode одновременно",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "8 clients:core8 режимы; на TLS server отдельный plain server для plain clients",
+      "expected": "Все отдельные transfers целы; server-side settings не меняются между сессиями",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-004",
+      "group": "PAR",
+      "title": "PWD/TYPE/REST независимы",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "ClientA CWD sub/TYPEA/REST, clientB остаётся home/TYPEI без REST",
+      "expected": "Состояние B не меняется; его download совпадает с полным binary fixture",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-005",
+      "group": "PAR",
+      "title": "Конкурентные STOR одного файла",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "2 sessions пишут разные payload в тот же path",
+      "expected": "Зафиксировать last-writer/interleaving поведение; не требовать atomic overwrite, если это не принято как contract",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-006",
+      "group": "PAR",
+      "title": "RETR одновременно со STOR",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "Существующий файл перезаписывается, другой client читает",
+      "expected": "Снять consistency model; нет daemon crash или утечки данных другого path; atomic snapshot не обещан",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-007",
+      "group": "PAR",
+      "title": "Rename/Delete во время transfer",
+      "priority": "P1",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "Открыт RETR/STOR, другой client RNTO/DELE target",
+      "expected": "Снять UNIX open-file semantics; bounded finish/error, нет зависания и потери unrelated files",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-008",
+      "group": "PAR",
+      "title": "Конкурентный MKD",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "Два клиента создают один путь",
+      "expected": "Один успешно создаёт; второй получает exists/допустимый ответ; один каталог с корректным owner",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-009",
+      "group": "PAR",
+      "title": "Разрыв одной сессии",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "4 clients; kill/close одного control/data socket на barrier",
+      "expected": "Остальные завершают transfers, новый client входит, listener не перезапущен",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:15",
+        "github:36",
+        "github:68"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-010",
+      "group": "PAR",
+      "title": "Больше transfers, чем passive ports",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "20 clients,11 ports default и 3 ports custom; bounded simultaneous open transfers",
+      "expected": "Нагрузка управляемо отказывает/ставится в очередь; после release восстановление; не путать allocated listener с числом TIME_WAIT",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:68",
+        "github:71"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-011",
+      "group": "PAR",
+      "title": "Many small files",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "1000 файлов разных размеров; sequential и 8 clients concurrent",
+      "expected": "Полный manifest совпадает; нет randomly empty files; время измерено без универсального SLA",
+      "sources": [
+        "code:vsftpd.conf:85",
+        "github:68",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "PAR-012",
+      "group": "PAR",
+      "title": "Медленный клиент",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-CONCURRENT",
+      "actions": "Один data socket читает/пишет 1KiB/s; другой обычный клиент",
+      "expected": "Обычный клиент завершает transfer в своём budget, медленный не блокирует весь daemon",
+      "sources": [
+        "code:vsftpd.conf:85"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-001",
+      "group": "FAIL",
+      "title": "Неполный STOR",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Отправить 64KiB из 1MiB, reset data socket",
+      "expected": "Нет успешного полного результата; проверить bytes/размер partial и дальнейший reconnect; server жив",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-002",
+      "group": "FAIL",
+      "title": "Обрыв RETR",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "После prefix закрыть data socket и затем control",
+      "expected": "Нет зависания daemon/resources; новый download возвращает весь исходный файл",
+      "sources": [
+        "code:vsftpd.conf:39"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-003",
+      "group": "FAIL",
+      "title": "Data socket не подключился",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "PASV/EPSV без connect либо active callback к контролируемому closed port",
+      "expected": "Ограниченный отказ 425/timeout; не ложный 226; новый transfer проходит",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:6",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-004",
+      "group": "FAIL",
+      "title": "Data socket открылся, но молчит",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "После negotiation удержать соединение без payload; custom data timeout3s",
+      "expected": "Истекает data timeout, освобождается slot; новый клиент работает",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:6"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-005",
+      "group": "FAIL",
+      "title": "Control ушёл во время data",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Удержать STOR/RETR на barrier, reset control",
+      "expected": "Снять partial/finish policy; нет zombie или вечного занятого passive port",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:15",
+        "github:36"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-006",
+      "group": "FAIL",
+      "title": "TLS handshake data оборван",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "После 150 открыть data, оборвать handshake и отдельно TLS после prefix",
+      "expected": "Нет plaintext fallback или ложного успешного upload; следующий корректный TLS transfer проходит",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:40",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-007",
+      "group": "FAIL",
+      "title": "Сеть пропала и вернулась",
+      "priority": "P0",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Router blackhole на 2s во время stream, отдельно TCP reset; вернуть route/rules",
+      "expected": "Короткий outage либо переживается TCP с точным hash, либо явный error; новая session всегда работает",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:49"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-008",
+      "group": "FAIL",
+      "title": "Resume после interruption",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Прервать upload/download на известном offset; size/stat→REST→продолжить",
+      "expected": "Полный результат совпадает; offset не угадан по отправленным client bytes, учитывается server size",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-009",
+      "group": "FAIL",
+      "title": "Смена режима после ошибки",
+      "priority": "P1",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Ошибка PASV→рабочий PORT и ошибка PORT→рабочий EPSV в одной control session",
+      "expected": "Новый mode не использует stale data socket; финальные control ответы согласованы",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:32"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-010",
+      "group": "FAIL",
+      "title": "Не читается source file",
+      "priority": "P2",
+      "expectation_type": "characterization",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Удалить/убрать read permission во время RETR для отдельного file fixture",
+      "expected": "Отказ или UNIX open-file finish; daemon жив, unrelated файлы целы",
+      "sources": [
+        "code:vsftpd.conf:39"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-011",
+      "group": "FAIL",
+      "title": "Сервер перезапущен",
+      "priority": "P2",
+      "expectation_type": "contract",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "Reset/restart server в середине STOR/RETR; reconnect после genuine ready",
+      "expected": "Клиент видит interruption; сохранённый complete source цел; partial policy зафиксирована",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:38",
+        "github:78"
+      ],
+      "implementation_status": "not-implemented"
+    },
+    {
+      "id": "FAIL-012",
+      "group": "FAIL",
+      "title": "Passive data hijack race",
+      "priority": "P2",
+      "expectation_type": "hardening",
+      "mode_set": "all8",
+      "recipe": "R-FAULT",
+      "actions": "После PASV clientB раньше clientA открывает data TCP; изолированная сеть",
+      "expected": "Default IP check не позволяет B получить/подменить content; clientA получает отказ либо правильные данные",
+      "sources": [
+        "code:vsftpd.conf:39",
+        "github:69"
+      ],
+      "implementation_status": "not-implemented"
+    }
+  ]
+}
