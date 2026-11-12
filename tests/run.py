@@ -2,11 +2,13 @@
 """Dependency-free Docker integration runner; failures are never xfailed."""
 import argparse
 import itertools
+import io
 import json
 import os
 from pathlib import Path
 import subprocess
 import tempfile
+import tarfile
 import time
 import traceback
 import uuid
@@ -20,9 +22,31 @@ RESULTS = []
 ARGS = None
 
 
-def docker(*args, check=True):
+def docker(*args, check=True, timeout=180):
     return subprocess.run(DOCKER + list(args), env=ENV, text=True,
-                          capture_output=True, check=check, timeout=180)
+                          capture_output=True, check=check, timeout=timeout)
+
+
+def copy_files(container, entries):
+    """Copy explicit tar metadata, including root ownership, to a remote daemon.
+
+    Entries are (path, bytes-or-None, mode, uid, gid); None denotes a directory.
+    Paths are relative to the container root. No host bind mounts are required.
+    """
+    archive = io.BytesIO()
+    with tarfile.open(fileobj=archive, mode="w") as tar:
+        for path, data, mode, uid, gid in entries:
+            info = tarfile.TarInfo(path)
+            info.uid, info.gid, info.mode = uid, gid, mode
+            if data is None:
+                info.type = tarfile.DIRTYPE
+                tar.addfile(info)
+            else:
+                info.size = len(data)
+                tar.addfile(info, io.BytesIO(data))
+    subprocess.run(DOCKER + ["cp", "-a", "-", container+":/"],
+                   input=archive.getvalue(), env=ENV, check=True,
+                   capture_output=True, timeout=180)
 
 
 def check(name, function):
@@ -47,9 +71,12 @@ def require(condition, message):
 
 
 class Server:
-    def __init__(self, users="alice|test-pass-a", security="plain", policy="default"):
+    def __init__(self, users="alice|test-pass-a", security="plain", policy="default",
+                 files=(), mounts=(), extra_env=(), startup_wait=3, config=None):
         self.name = "ftp-tests-" + uuid.uuid4().hex
         self.users, self.security, self.policy = users, security, policy
+        self.files, self.mounts, self.extra_env = files, mounts, extra_env
+        self.startup_wait, self.config = startup_wait, config
 
     def __enter__(self):
         try:
@@ -57,20 +84,24 @@ class Server:
             docker("create", "--name", self.name, "--network", self.name,
                    "--network-alias", "ftp.test", "--label", "ftp-test.run="+self.name,
                    "-e", "USERS="+self.users, "-e", "ADDRESS=ftp.test",
+                   *self.mounts, *sum((["-e", value] for value in self.extra_env), []),
                    *([] if self.security == "plain" else [
                        "-e", "TLS_CERT=/certs/cert.pem", "-e", "TLS_KEY=/certs/key.pem"]),
                    ARGS.image)
             docker("cp", str(ARGS.certs)+"/.", self.name+":/certs")
-            if self.policy == "readonly":
-                conf = (ROOT/"vsftpd.conf").read_text().replace("write_enable=YES", "write_enable=NO")
-                path = ARGS.certs/"readonly.conf"
-                path.write_text(conf)
-                docker("cp", str(path), self.name+":/etc/vsftpd/vsftpd.conf")
+            if self.policy == "readonly" or self.config is not None:
+                conf = self.config if self.config is not None else (ROOT/"vsftpd.conf").read_text()
+                if self.policy == "readonly":
+                    conf = conf.replace("write_enable=YES", "write_enable=NO")
+                # vsftpd rejects configs owned by the runner's non-root UID.
+                copy_files(self.name, [("etc/vsftpd/vsftpd.conf", conf.encode(), 0o600, 0, 0)])
+            if self.files:
+                copy_files(self.name, self.files)
             docker("start", self.name)
             # Inspect state without exec/cp during daemonization. Protocol tests
             # perform their own real connect/login/data assertions afterwards.
             started = time.monotonic()
-            while time.monotonic()-started < 3:
+            while time.monotonic()-started < self.startup_wait:
                 state = json.loads(docker("inspect", self.name).stdout)[0]["State"]
                 require(state["Running"], "Container exited during startup: "+self.logs())
                 time.sleep(.1)
@@ -85,6 +116,9 @@ class Server:
 
     def exec(self, *args):
         return docker("exec", self.name, *args)
+
+    def state(self):
+        return json.loads(docker("inspect", self.name).stdout)[0]["State"]
 
     def __exit__(self, *exc):
         log = self.logs()
