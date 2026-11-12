@@ -1,7 +1,6 @@
 # Docker integration tests
 
-Only test code and GitHub test jobs are changed. Application failures are ordinary
-failures: there are no xfail markers, retries, continue-on-error or application
+Application failures are ordinary failures: there are no xfail markers, retries, continue-on-error or application
 patches in this suite.
 
 Requirements: Docker (Linux containers), Python 3.12+, OpenSSL CLI, access to the
@@ -48,3 +47,10 @@ publish job. The additional ftp-tests workflow runs for test/workflow pushes,
 daily and manually; it never publishes an image. Artifacts upload even on
 failure. A failing application test intentionally blocks the existing release
 dependency, without modifying the application's behavior.
+
+
+Historical lifecycle, multiuser/audit, mount/permission and negative-control
+regressions run by default. See [REGRESSIONS.md](REGRESSIONS.md) for source issues,
+assertions, control construction and focused suite commands. There are five
+independent early-connect starts per security profile by default; use
+`--startup-attempts 50` for the extended startup series.
