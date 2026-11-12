@@ -330,7 +330,7 @@ def direct_pid1_control(h):
     # Recreate the historical direct foreground entrypoint without changing the
     # product image. This control checks actual SIGTERM behavior, not a config
     # string, so it does not invent a prohibition on foreground under tini.
-    with h.Server(extra_args=('--entrypoint', '/bin/start_vsftpd.sh'),
+    with h.Server(extra_args=('--init=false', '--entrypoint', '/bin/start_vsftpd.sh'),
                   command=('sh', '-c', 'exec vsftpd /etc/vsftpd/vsftpd.conf -obackground=NO')) as server:
         h.require(server.exec('cat', '/proc/1/comm').stdout.strip() == 'vsftpd',
                   'Direct PID1 control was not constructed correctly')
