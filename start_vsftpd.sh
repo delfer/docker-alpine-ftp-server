@@ -91,8 +91,11 @@ fi
 if [ ! -z "$1" ]; then
   exec "$@"
 else
-  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT $TLS_OPT /etc/vsftpd/vsftpd.conf
-  [ -d /var/run/vsftpd ] || mkdir /var/run/vsftpd
-  pgrep vsftpd | tail -n 1 > /var/run/vsftpd/vsftpd.pid
+  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT $TLS_OPT /etc/vsftpd/vsftpd.conf || exit $?
+  mkdir -p /var/run/vsftpd || exit 1
+  # The listener predates its session workers. Exact matching excludes this
+  # script and short-lived pipeline children that inherit its process name.
+  DAEMON_PID=$(pgrep -xo vsftpd) || exit 1
+  printf '%s\n' "$DAEMON_PID" > /var/run/vsftpd/vsftpd.pid || exit 1
   exec pidproxy /var/run/vsftpd/vsftpd.pid true
 fi
