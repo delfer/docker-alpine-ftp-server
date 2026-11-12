@@ -7,6 +7,7 @@ import json
 import os
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 import tarfile
 import time
@@ -30,7 +31,8 @@ def docker(*args, check=True, timeout=180):
 def copy_files(container, entries):
     """Copy explicit tar metadata, including root ownership, to a remote daemon.
 
-    Entries are (path, bytes-or-None, mode, uid, gid); None denotes a directory.
+    Entries are (path, data, mode, uid, gid). Data is bytes for a regular file,
+    None for a directory, or a string symlink target.
     Paths are relative to the container root. No host bind mounts are required.
     """
     archive = io.BytesIO()
@@ -40,6 +42,9 @@ def copy_files(container, entries):
             info.uid, info.gid, info.mode = uid, gid, mode
             if data is None:
                 info.type = tarfile.DIRTYPE
+                tar.addfile(info)
+            elif isinstance(data, str):
+                info.type, info.linkname = tarfile.SYMTYPE, data
                 tar.addfile(info)
             else:
                 info.size = len(data)
@@ -72,11 +77,14 @@ def require(condition, message):
 
 class Server:
     def __init__(self, users="alice|test-pass-a", security="plain", policy="default",
-                 files=(), mounts=(), extra_env=(), startup_wait=3, config=None):
+                 files=(), extra_args=(), extra_env=(), startup_wait=3, config=None,
+                 autostart=True, command=()):
         self.name = "ftp-tests-" + uuid.uuid4().hex
         self.users, self.security, self.policy = users, security, policy
-        self.files, self.mounts, self.extra_env = files, mounts, extra_env
+        self.files, self.extra_args, self.extra_env = files, extra_args, extra_env
         self.startup_wait, self.config = startup_wait, config
+        self.autostart = autostart
+        self.command = command
 
     def __enter__(self):
         try:
@@ -84,10 +92,10 @@ class Server:
             docker("create", "--name", self.name, "--network", self.name,
                    "--network-alias", "ftp.test", "--label", "ftp-test.run="+self.name,
                    "-e", "USERS="+self.users, "-e", "ADDRESS=ftp.test",
-                   *self.mounts, *sum((["-e", value] for value in self.extra_env), []),
+                   *self.extra_args, *[arg for value in self.extra_env for arg in ("-e", value)],
                    *([] if self.security == "plain" else [
                        "-e", "TLS_CERT=/certs/cert.pem", "-e", "TLS_KEY=/certs/key.pem"]),
-                   ARGS.image)
+                   ARGS.image, *self.command)
             docker("cp", str(ARGS.certs)+"/.", self.name+":/certs")
             if self.policy == "readonly" or self.config is not None:
                 conf = self.config if self.config is not None else (ROOT/"vsftpd.conf").read_text()
@@ -97,14 +105,8 @@ class Server:
                 copy_files(self.name, [("etc/vsftpd/vsftpd.conf", conf.encode(), 0o600, 0, 0)])
             if self.files:
                 copy_files(self.name, self.files)
-            docker("start", self.name)
-            # Inspect state without exec/cp during daemonization. Protocol tests
-            # perform their own real connect/login/data assertions afterwards.
-            started = time.monotonic()
-            while time.monotonic()-started < self.startup_wait:
-                state = json.loads(docker("inspect", self.name).stdout)[0]["State"]
-                require(state["Running"], "Container exited during startup: "+self.logs())
-                time.sleep(.1)
+            if self.autostart:
+                self.start()
             return self
         except BaseException:
             self.__exit__(None, None, None)
@@ -120,16 +122,27 @@ class Server:
     def state(self):
         return json.loads(docker("inspect", self.name).stdout)[0]["State"]
 
+    def start(self):
+        docker("start", self.name)
+        # No exec/cp probes during daemonization; early-connect tests can opt out
+        # of this observation interval and start an already prepared client.
+        started = time.monotonic()
+        while time.monotonic()-started < self.startup_wait:
+            require(self.state()["Running"], "Container exited during startup: "+self.logs())
+            time.sleep(.1)
+
     def __exit__(self, *exc):
-        log = self.logs()
-        # These are fixed disposable test credentials, nevertheless redact logs.
-        for value in self.users.split():
-            fields = value.split("|")
-            if len(fields) > 1:
-                log = log.replace(fields[1], "<redacted>")
-        (ARGS.output/(self.name+".log")).write_text(log)
-        docker("rm", "-f", self.name, check=False)
-        docker("network", "rm", self.name, check=False)
+        try:
+            log = self.logs()
+            # These are disposable credentials, nevertheless redact artifacts.
+            for value in self.users.split():
+                fields = value.split("|")
+                if len(fields) > 1 and fields[1]:
+                    log = log.replace(fields[1], "<redacted>")
+            (ARGS.output/(self.name+".log")).write_text(log)
+        finally:
+            docker("rm", "-f", self.name, check=False)
+            docker("network", "rm", self.name, check=False)
 
 
 def protocols(security, policy):
@@ -168,6 +181,9 @@ def users(spec, expected):
             if gid is not None:
                 actual = server.exec("id", "-g", name).stdout.strip()
                 require(int(actual) == gid, f"{name}: GID {actual} != {gid}")
+            elif uid is None:
+                primary = server.exec("id", "-gn", name).stdout.strip()
+                require(primary == name, f"{name}: auto account inherited group {primary}")
 
 
 def private_homes():
@@ -180,7 +196,10 @@ def private_homes():
 def lifecycle():
     with Server() as server:
         before = server.exec("cat", "/var/run/vsftpd/vsftpd.pid").stdout.strip()
-        server.exec("kill", before)
+        result = docker("exec", server.name, "kill", before, check=False)
+        # Namespace teardown may terminate the exec process after kill succeeds.
+        require(result.returncode == 0 or not server.state()["Running"],
+                "Could not signal the listener: "+result.stderr)
         deadline = time.monotonic()+10
         while time.monotonic() < deadline:
             state = json.loads(docker("inspect", server.name).stdout)[0]["State"]
@@ -210,7 +229,12 @@ def main():
     parser.add_argument("--image", default="ftp-under-test:local")
     parser.add_argument("--client-image", default="python:3.12-alpine")
     parser.add_argument("--output", type=Path, default=ROOT/"test-results")
+    parser.add_argument("--suite", choices=("all", "protocols", "accounts", "regressions"), default="all")
+    parser.add_argument("--startup-attempts", type=int, default=5,
+                        help="independent early-connect containers per security profile")
     ARGS = parser.parse_args()
+    if ARGS.startup_attempts < 1:
+        parser.error("--startup-attempts must be positive")
     ARGS.output = ARGS.output.resolve()
     ARGS.output.mkdir(parents=True, exist_ok=True)
     docker("info")
@@ -220,24 +244,34 @@ def main():
                         "-days", "2", "-keyout", tmp+"/key.pem", "-out", tmp+"/cert.pem",
                         "-subj", "/CN=ftp.test", "-addext", "subjectAltName=DNS:ftp.test"],
                        check=True, capture_output=True)
-        for security, policy in itertools.product(("plain", "tls12", "tls13"), ("default", "readonly")):
-            check("suite/"+security+"/"+policy, lambda s=security, p=policy: protocols(s, p))
-        for spec, expected in [
-            ("alice|test-pass-a", [("alice", None, None)]),
-            ("alice|test-pass-a||10000", [("alice", 10000, 10000)]),
-            ("alice|test-pass-a||10000|82", [("alice", 10000, 82)]),
-            ("alice|test-pass-a|||82", [("alice", None, 82)]),
-        ]:
-            check("USR/GRP/"+str(expected), lambda s=spec, e=expected: users(s, e))
-        roles = [("auto", "alice|test-pass-a", ("alice", None, None)),
-                 ("explicit", "bob|test-pass-b||10000|12000", ("bob", 10000, 12000)),
-                 ("existing", "charlie|test-pass-c||10001|82", ("charlie", 10001, 82))]
-        for permutation in itertools.permutations(roles):
-            check("GRP-009/"+",".join(r[0] for r in permutation),
-                  lambda p=permutation: users(" ".join(r[1] for r in p), [r[2] for r in p]))
-        check("FS-003/private-homes", private_homes)
-        check("LIFE-014/listener-death", lifecycle)
+        if ARGS.suite in ("all", "protocols"):
+            for security, policy in itertools.product(("plain", "tls12", "tls13"), ("default", "readonly")):
+                check("suite/"+security+"/"+policy, lambda s=security, p=policy: protocols(s, p))
+        if ARGS.suite in ("all", "accounts"):
+            account_checks()
+        if ARGS.suite in ("all", "regressions"):
+            import regressions
+            regressions.run(sys.modules[__name__])
     return bool(write_report())
+
+
+def account_checks():
+    for spec, expected in [
+        ("alice|test-pass-a", [("alice", None, None)]),
+        ("alice|test-pass-a||10000", [("alice", 10000, 10000)]),
+        ("alice|test-pass-a||10000|82", [("alice", 10000, 82)]),
+        ("alice|test-pass-a|||82", [("alice", None, 82)]),
+        ("alice|test-pass-a|||12000", [("alice", None, 12000)]),
+    ]:
+        check("USR/GRP/"+str(expected), lambda s=spec, e=expected: users(s, e))
+    roles = [("auto", "alice|test-pass-a", ("alice", None, None)),
+             ("explicit", "bob|test-pass-b||10000|12000", ("bob", 10000, 12000)),
+             ("existing", "charlie|test-pass-c||10001|82", ("charlie", 10001, 82))]
+    for permutation in itertools.permutations(roles):
+        check("GRP-009/"+",".join(r[0] for r in permutation),
+              lambda p=permutation: users(" ".join(r[1] for r in p), [r[2] for r in p]))
+    check("FS-003/private-homes", private_homes)
+    check("LIFE-014/listener-death", lifecycle)
 
 
 if __name__ == "__main__":
