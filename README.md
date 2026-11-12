@@ -28,6 +28,13 @@ Environment variables:
 - `user|password|/home/user/dir|10000|10000`
 - `user|password||10000`
 - `user|password||10000|82` : add to an existing group (www-data)
+- `user|password|||82` : allocate a UID and use an existing group (www-data)
+
+New home directories use permissions `0750`. Existing home directories keep
+their configured permission bits, including mounted directories and symlink
+targets. The home directory owner/group is assigned to the configured account;
+existing nested file ownership and permissions are not changed recursively.
+A regular file or dangling symlink used as a home path is rejected at startup.
 
 ## FTPS (File Transfer Protocol + SSL) Example
 
