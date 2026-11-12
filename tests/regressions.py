@@ -20,6 +20,7 @@ class Client:
         self.name = server.name+'-sessions'
         self.process = self.stderr = None
         self.events = []
+        self.terminal_replies = []
 
     def __enter__(self):
         h = self.h
@@ -52,13 +53,15 @@ class Client:
         result = json.loads(line)
         self.h.require(result.get('ok'), result.get('detail', str(result)))
         self.events.extend(result.get('events', []))
+        self.terminal_replies.extend(result.get('terminal_replies', []))
         return result
 
     def __exit__(self, *exc):
         try:
             (self.h.ARGS.output/(self.name+'.json')).write_text(json.dumps(
                 dict(server=self.server.name, security=self.server.security,
-                     expected_transfer_events=self.events), indent=2))
+                     expected_transfer_events=self.events,
+                     terminal_replies=self.terminal_replies), indent=2))
         finally:
             if self.process:
                 # Terminate the exec client before removing its container, even
@@ -177,7 +180,7 @@ def worker_death(h, security):
         workers = [line.split()[0] for line in rows if line.split()[1:] == ['bob', 'vsftpd']]
         h.require(workers, 'No bob worker exists to kill')
         server.exec('kill', '-KILL', workers[0])
-        client.call('broken', ids=['bob'], worker_killed=True)
+        client.call('broken', ids=['bob'])
         for user in ('alice', 'charlie'):
             client.call('transfer', id=user)
         client.call('open', id='bob', user='bob')

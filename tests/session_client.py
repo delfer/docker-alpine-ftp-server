@@ -143,34 +143,40 @@ def handle(command):
         DATA[command['id']] = data
         return dict(user=user, file=name)
     if op == 'broken':
-        closed = []
+        closed, terminal_replies = [], []
         for key in command['ids']:
             _, ftp = SESSIONS.pop(key)
+            deadline = time.monotonic()+2
+            messages = []
             try:
-                ftp.sock.settimeout(1)
-                ftp.voidcmd('NOOP')
-            except (OSError, EOFError) as error:
-                if isinstance(error, TimeoutError):
-                    raise
-                closed.append(key)
-            except ftplib.error_perm as error:
-                # A killed worker can send its terminal diagnostic before EOF.
-                # It is not a successful command or proof of a closed socket.
-                if not command.get('worker_killed') or str(error) != '500 OOPS: child died':
-                    raise
-                try:
-                    ftp.getresp()
-                except (OSError, EOFError) as ending:
-                    if isinstance(ending, TimeoutError):
-                        raise
-                    closed.append(key)
+                # A dying process may emit one or several fatal diagnostics;
+                # concurrent handlers can even duplicate their prefixes. Read
+                # to actual EOF/reset without sending another FTP command.
+                while True:
+                    remaining = deadline-time.monotonic()
+                    if remaining <= 0:
+                        raise TimeoutError('Session did not close: '+key)
+                    ftp.sock.settimeout(remaining)
+                    try:
+                        reply = ftp.getresp()
+                    except (ftplib.error_temp, ftplib.error_perm, ftplib.error_proto) as error:
+                        message = str(error)
+                        for password in CREDENTIALS.values():
+                            message = message.replace(password, '<redacted>')
+                        messages.append(message)
+                    except (OSError, EOFError) as ending:
+                        if isinstance(ending, TimeoutError):
+                            raise
+                        closed.append(key)
+                        break
+                    else:
+                        raise AssertionError('Unexpected reply after process death: '+reply)
             finally:
                 ftp.close()
                 if key in DATA:
                     DATA.pop(key).close()
-            if key not in closed:
-                raise AssertionError('Session remained usable: '+key)
-        return dict(closed=closed)
+            terminal_replies.append(dict(id=key, messages=messages))
+        return dict(closed=closed, terminal_replies=terminal_replies)
     if op == 'config':
         with connect(next(iter(CREDENTIALS))) as ftp:
             if command['banner'] not in ftp.getwelcome():

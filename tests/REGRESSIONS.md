@@ -67,3 +67,9 @@ A stopped upload is expected to be interrupted, not silently marked completed.
 This does not claim the full research catalogue, router/FXP, ARM execution, old
 kernels, or every Docker logging driver. The Dockerfile, log destination,
 background/tini/pidproxy design and upstream dependency versions are preserved.
+
+Killed-worker closure is checked by reading terminal replies to actual EOF/reset
+within a deadline, without sending another command. Fatal diagnostics may be
+interleaved or repeat their prefixes; their wording is not an API contract. A
+timeout or an ordinary reply still fails, and the other users must transfer
+correct bytes. Received terminal diagnostics are retained in client artifacts.
