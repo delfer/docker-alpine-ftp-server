@@ -21,6 +21,8 @@ if [ -z "$USERS" ]; then
 fi
 
 for i in $USERS ; do
+  UID_OPT=
+  GROUP_OPT=
   NAME=$(echo $i | cut -d'|' -f1)
   GROUP=$NAME
   PASS=$(echo $i | cut -d'|' -f2)
@@ -33,25 +35,38 @@ for i in $USERS ; do
     FOLDER="/ftp/$NAME"
   fi
 
-  if [ ! -z "$UID" ]; then
+  if { [ -e "$FOLDER" ] || [ -L "$FOLDER" ]; } && [ ! -d "$FOLDER" ]; then
+    printf '%s\n' "Home path must be a directory: $FOLDER" >&2
+    exit 1
+  fi
+
+  if [ -n "$UID" ]; then
     UID_OPT="-u $UID"
     if [ -z "$GID" ]; then
       GID=$UID
     fi
-    #Check if the group with the same ID already exists
-    GROUP=$(getent group $GID | cut -d: -f1)
-    if [ ! -z "$GROUP" ]; then
-      GROUP_OPT="-G $GROUP"
-    elif [ ! -z "$GID" ]; then
-      # Group don't exist but GID supplied
-      addgroup -g $GID $NAME
-      GROUP_OPT="-G $NAME"
-    fi
   fi
 
-  echo -e "$PASS\n$PASS" | adduser -h $FOLDER -s /sbin/nologin $UID_OPT $GROUP_OPT $NAME
-  mkdir -m 750 -p $FOLDER
-  chown $NAME:$GROUP $FOLDER
+  if [ -n "$GID" ]; then
+    GROUP=$(getent group "$GID" | cut -d: -f1)
+    if [ -z "$GROUP" ]; then
+      addgroup -g "$GID" "$NAME"
+      GROUP=$NAME
+    fi
+    GROUP_OPT="-G $GROUP"
+  fi
+
+  # BusyBox adduser also chmods pre-existing homes. Preserve mount/custom modes;
+  # new homes must be private even when adduser creates them before mkdir.
+  FOLDER_MODE=750
+  if [ -d "$FOLDER" ]; then
+    FOLDER_MODE=$(stat -L -c '%a' "$FOLDER") || exit 1
+  fi
+
+  echo -e "$PASS\n$PASS" | adduser -h "$FOLDER" -s /sbin/nologin $UID_OPT $GROUP_OPT "$NAME"
+  mkdir -p "$FOLDER"
+  chown "$NAME:$GROUP" "$FOLDER"
+  chmod "$FOLDER_MODE" "$FOLDER"
   unset NAME PASS FOLDER UID GID
 done
 
