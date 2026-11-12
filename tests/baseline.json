@@ -1,0 +1,27 @@
+{
+  "application_commit": "8989ee25e7bc6ff12bc9af41ee9433737ac3e842",
+  "run_date": "2026-11-12",
+  "platform": "linux/amd64",
+  "passed_results": 281,
+  "failed_results": 17,
+  "note": "Result records include suite summaries/subtests; not a claim of 298 independent catalogue cases. No xfail or retries. Startup failures can block entire profiles.",
+  "failed_ids": [
+    "suite/plain/readonly",
+    "suite/tls12/default",
+    "tls12/readonly/test_CFG_003_mutations (__main__.ReadOnly.test_CFG_003_mutations) (method='PASV')",
+    "tls12/readonly/test_CFG_003_mutations (__main__.ReadOnly.test_CFG_003_mutations) (method='EPSV')",
+    "tls12/readonly/test_CFG_003_mutations (__main__.ReadOnly.test_CFG_003_mutations) (method='PORT')",
+    "tls12/readonly/test_CFG_003_mutations (__main__.ReadOnly.test_CFG_003_mutations) (method='EPRT')",
+    "suite/tls12/readonly",
+    "suite/tls13/readonly",
+    "USR/GRP/[('alice', 10000, 10000)]",
+    "USR/GRP/[('alice', 10000, 82)]",
+    "USR/GRP/[('alice', None, 82)]",
+    "GRP-009/auto,explicit,existing",
+    "GRP-009/explicit,auto,existing",
+    "GRP-009/explicit,existing,auto",
+    "GRP-009/existing,auto,explicit",
+    "GRP-009/existing,explicit,auto",
+    "FS-003/private-homes"
+  ]
+}
