@@ -1,5 +1,10 @@
 # docker-alpine-ftp-server
-[![Docker Stars](https://img.shields.io/docker/stars/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/) [![Docker Pulls](https://img.shields.io/docker/pulls/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/) [![Docker Automated build](https://img.shields.io/docker/automated/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/) [![Docker Build Status](https://img.shields.io/docker/build/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/) [![MicroBadger Layers](https://img.shields.io/microbadger/layers/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/) [![MicroBadger Size](https://img.shields.io/microbadger/image-size/delfer/alpine-ftp-server.svg)](https://hub.docker.com/r/delfer/alpine-ftp-server/)  
+
+[![Build Status](https://img.shields.io/github/actions/workflow/status/delfer/docker-alpine-ftp-server/docker-publish-image.yml?branch=master&style=flat-square&logo=github&label=build)](https://github.com/delfer/docker-alpine-ftp-server/actions/workflows/docker-publish-image.yml)
+[![Docker Pulls](https://img.shields.io/docker/pulls/delfer/alpine-ftp-server?style=flat-square&logo=docker)](https://hub.docker.com/r/delfer/alpine-ftp-server/)
+[![Docker Stars](https://img.shields.io/docker/stars/delfer/alpine-ftp-server?style=flat-square&logo=docker)](https://hub.docker.com/r/delfer/alpine-ftp-server/)
+[![Docker Image Size (latest)](https://img.shields.io/docker/image-size/delfer/alpine-ftp-server/latest?style=flat-square&logo=docker&label=image%20size)](https://hub.docker.com/r/delfer/alpine-ftp-server/tags?name=latest)
+
 Small and flexible docker image with vsftpd server
 
 Built with Alpine Linux 3.24.4 and vsftpd 3.0.5 (Alpine package 3.0.5-r3).
