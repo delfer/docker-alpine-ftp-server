@@ -78,4 +78,10 @@ END {
 cmp -s "$temporary" "$config" && exit 0
 # Preserve ownership, permissions, symlinks and bind-mounted file inodes.
 # All validation and rendering has succeeded before the original is opened.
-cat "$temporary" > "$config"
+if cat "$temporary" > "$config"; then
+  exit 0
+else
+  status=$?
+  printf '%s\n' 'update_conf: failed to write configuration' >&2
+  exit "$status"
+fi
