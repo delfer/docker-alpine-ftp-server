@@ -70,8 +70,9 @@ The source config is always left unchanged, including its ownership, permissions
 symlinks and bind mounts. It must be a readable, root-owned regular file, as
 required by vsftpd. A private runtime file is generated atomically on every
 start, including when no `CONF_` variables are present. Removing a variable when
-recreating the container restores the value from the source config; an option
-absent from the source returns to vsftpd's default. For example, source
+recreating the container restores the value from the source config. An option
+absent from the source falls back to the legacy environment settings where
+applicable (for example, `MIN_PORT`), or to vsftpd's default. For example, source
 `max_clients=20`, then `CONF_max_clients=10`, then removing that variable produces
 `20`, `10`, `20` across those starts. Runtime files from previous starts are never
 used as the source. Custom commands passed to the container bypass generation.
