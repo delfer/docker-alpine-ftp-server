@@ -42,15 +42,17 @@ For example, add these arguments to `docker run`:
 ```
 
 `CONF_<OPTION>` replaces an existing assignment, activates a commented example,
-or appends a missing option in `/etc/vsftpd/vsftpd.conf`. Repeated application
-produces the same file; matching duplicates become one assignment. Other options
-and comments are retained. Values are literal, including spaces, `=`, `&`, `/`,
+or appends a missing option in the generated runtime configuration. Each start
+reads `/etc/vsftpd/vsftpd.conf` as the source and writes the effective config to
+`/var/run/vsftpd/vsftpd.conf`. Repeated rendering produces the same contents;
+matching duplicates become one assignment. Other options and comments are
+retained. Values are literal, including spaces, `=`, `&`, `/`,
 `|` and backslashes. An empty value sets an empty string; it does not remove an
 option. There are no special comment/uncomment action values.
 
 Names must match `[A-Za-z][A-Za-z0-9_]*`. Conflicting variables such as
 `CONF_FTPD_BANNER=one` and `CONF_ftpd_banner=two`, and values containing CR/LF,
-fail startup before the config is changed. vsftpd validates option names and
+fail startup before publishing a runtime config. vsftpd validates option names and
 types; unsupported options or invalid values fail startup. Values are not
 printed by the updater.
 Native vsftpd validation failures may exit without a diagnostic in Docker logs;
@@ -64,15 +66,28 @@ change the policy selected by `TLS_CERT`/`TLS_KEY`. Options that change how the
 daemon runs (such as `background` or `listen`) must remain compatible with the
 container startup and supervision model.
 
-Without `CONF_` variables the config is not written, including when mounted
-read-only. With overrides it must be writable; file ownership, permissions and
-bind mounts are preserved. Updates persist in the container config: removing a
-variable on a later run does not restore the previous value. Recreate the
-container from the image (and restore any persistent config) to reset it.
-Updater validation/rendering errors leave the original file intact. The final in-place
-write is not atomic; an I/O failure aborts startup and may require restoring the
-config.
-Custom commands passed to the container bypass the updater.
+The source config is always left unchanged, including its ownership, permissions,
+symlinks and bind mounts. It must be a readable, root-owned regular file, as
+required by vsftpd. A private runtime file is generated atomically on every
+start, including when no `CONF_` variables are present. Removing a variable when
+recreating the container restores the value from the source config; an option
+absent from the source returns to vsftpd's default. For example, source
+`max_clients=20`, then `CONF_max_clients=10`, then removing that variable produces
+`20`, `10`, `20` across those starts. Runtime files from previous starts are never
+used as the source. Custom commands passed to the container bypass generation.
+
+To supply your own config, mount it at the existing source path (read-only is
+supported, with or without overrides):
+
+```sh
+-v "$PWD/vsftpd.conf:/etc/vsftpd/vsftpd.conf:ro" \
+-e CONF_FTPD_BANNER='My FTP server'
+```
+
+The effective configuration is a snapshot taken at startup. Restart the container
+to read edits to the source file; recreate it to apply environment changes.
+Existing files already modified by an older image must be restored once to the
+desired source configuration; the original values cannot be inferred.
 
 ## USERS examples
 

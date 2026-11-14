@@ -15,12 +15,15 @@ Run from the repository root:
 For the `CONF_` configuration checks alone, use `--suite config`. Renderer tests
 execute the shipped updater with the image's BusyBox shell/awk. They verify
 literal values, case aliases/conflicts, active/commented/missing/duplicate
-options, idempotence, validation before writing, preserved metadata/symlinks and
-temporary/final-write errors. These checks also run in the default `all` suite.
+options, idempotence, removal of overrides, unchanged source metadata/symlinks,
+private runtime files and atomic-publication failure handling. These checks also run in the default `all` suite.
 Live checks cover banner, umask, chroot, read-only policy and passive-range/address
 precedence over legacy environment settings, through PASV/EPSV/PORT/EPRT on plain
 FTP, TLS1.2 and TLS1.3, before and after restart. Startup validation, custom-command
-bypass and real writable/read-only file bind mounts are also exercised.
+bypass and real writable/read-only custom file bind mounts are also exercised.
+The same source inode is reused across containers with full, partial and removed
+overrides; source edits are reread on restart. The restored banner, umask and
+settings are checked in the generated config and through real FTP transfers.
 
 For a managed local daemon set DOCKER_HOST=unix:///var/run/docker.sock explicitly.
 The runner preserves DOCKER_HOST; it clears saved Docker context/TLS selectors.
@@ -28,7 +31,8 @@ An alternative client image can be passed with --client-image.
 
 The client runs in an isolated Docker network, so active callbacks work even
 when the host cannot reach container IP addresses. Fixtures are copied through
-Docker rather than bind-mounted. Each server/network/client has a UUID and is
+Docker; configuration bind-mount tests create their source on the daemon.
+Each server/network/client has a UUID and is
 removed in finally. Credentials and certificates are disposable test data.
 
 The default run exercises plain FTP, explicit TLS1.2 and TLS1.3 against all four
