@@ -112,7 +112,6 @@ Add the needed arguments before the image name in the `docker run` example above
 
 For anonymous downloads, also mount `-v "$PWD/public:/srv/public:ro"` with
 traversable directories and readable files (typically `0755` and `0644`).
-Recreate the container after changing environment variables.
 
 ## USERS examples
 
