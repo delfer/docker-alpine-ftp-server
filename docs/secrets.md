@@ -9,6 +9,9 @@ part of a field. Backslashes and shell metacharacters in passwords are literal.
 values. An empty path, missing/unreadable/non-regular file or empty/whitespace-only
 content stops startup before accounts are changed. It never enables the default
 account as a fallback. Account/group creation failures also stop startup.
+Matching non-root accounts with custom home paths are recreated on restart,
+just like accounts under `/ftp`; their home contents remain in place. This also
+applies rotated passwords and UID/GID settings to custom-home accounts.
 With neither variable set, or with only `USERS=''`, the existing default account
 remains unchanged.
 

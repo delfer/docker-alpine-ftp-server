@@ -119,7 +119,8 @@ def projected_volumes(h):
                 config = '\n'.join(line for line in config.splitlines()
                                    if not line.startswith('ftpd_banner='))
                 entries += [
-                    (f'projected/secret/{generation}/users', f'alice|{password}||10000|82\n'.encode(),
+                    (f'projected/secret/{generation}/users',
+                     f'alice|{password}|/home/alice/nested|10000|82\n'.encode(),
                      0o400, 0, 0),
                     (f'projected/config/{generation}/vsftpd.conf',
                      (config+'\nftpd_banner='+banner+'\n').encode(), 0o444, 0, 0),
@@ -144,7 +145,8 @@ def projected_volumes(h):
                                       'sh', '/projected/'+directory)
                         stop(h, server)
                         server.start()
-                    with Client(h, server, credentials=dict(alice=password)) as client:
+                    with Client(h, server, credentials=dict(alice=password),
+                                homes=dict(alice='/home/alice/nested')) as client:
                         client.call('persistent')
                         if generation == 'v2':
                             client.call('login_denied', user='alice', password='test-pass-a')
@@ -167,6 +169,7 @@ def run(h):
     for label, users in [('unset', None), ('empty', '')]:
         h.check('secrets/legacy-default/'+label, lambda u=users: legacy_default(h, u))
     for label, spec in [('existing-user', 'root|test-pass-a'),
+                        ('root-home', 'root|test-pass-a|/root'),
                         ('invalid-uid', 'alice|test-pass-a||not-a-uid'),
                         ('invalid-gid', 'alice|test-pass-a|||not-a-gid')]:
         h.check('secrets/invalid-account/'+label, lambda s=spec: invalid_account(h, s))

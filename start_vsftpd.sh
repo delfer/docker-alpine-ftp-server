@@ -57,6 +57,13 @@ EOF
     exit 1
   fi
 
+  # Custom-home accounts survive the /ftp/ cleanup. Recreate matching non-root
+  # accounts too, so restarts apply rotated credentials and UID/GID settings.
+  if [ "$(getent passwd "$NAME" | cut -d: -f6)" = "$FOLDER" ] &&
+     [ "$(id -u "$NAME")" != 0 ]; then
+    deluser "$NAME" || exit $?
+  fi
+
   if [ -n "$UID" ]; then
     UID_OPT="-u $UID"
     if [ -z "$GID" ]; then
