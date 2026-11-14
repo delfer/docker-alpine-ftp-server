@@ -229,7 +229,7 @@ def main():
     parser.add_argument("--image", default="ftp-under-test:local")
     parser.add_argument("--client-image", default="python:3.12-alpine")
     parser.add_argument("--output", type=Path, default=ROOT/"test-results")
-    parser.add_argument("--suite", choices=("all", "protocols", "accounts", "regressions"), default="all")
+    parser.add_argument("--suite", choices=("all", "protocols", "accounts", "regressions", "config"), default="all")
     parser.add_argument("--startup-attempts", type=int, default=5,
                         help="independent early-connect containers per security profile")
     ARGS = parser.parse_args()
@@ -252,6 +252,9 @@ def main():
         if ARGS.suite in ("all", "regressions"):
             import regressions
             regressions.run(sys.modules[__name__])
+        if ARGS.suite in ("all", "config"):
+            import configuration
+            configuration.run(sys.modules[__name__])
     return bool(write_report())
 
 

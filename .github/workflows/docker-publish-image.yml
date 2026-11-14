@@ -8,6 +8,7 @@ on:
       # Run when file is edited
       - Dockerfile
       - start_vsftpd.sh
+      - update_conf.sh
       - vsftpd.conf
 
   # Run tests for any PRs.

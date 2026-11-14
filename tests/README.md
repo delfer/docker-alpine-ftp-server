@@ -12,6 +12,12 @@ Run from the repository root:
     docker pull python:3.12-alpine
     python3 tests/run.py --image ftp-under-test:local
 
+For the `CONF_` configuration checks alone, use `--suite config`. Renderer tests
+execute the shipped updater with the image's BusyBox shell/awk. They verify
+literal values, case aliases/conflicts, active/commented/missing/duplicate
+options, idempotence, validation before writing, preserved metadata/symlinks and
+temporary/final-write errors. These checks also run in the default `all` suite.
+
 For a managed local daemon set DOCKER_HOST=unix:///var/run/docker.sock explicitly.
 The runner preserves DOCKER_HOST; it clears saved Docker context/TLS selectors.
 An alternative client image can be passed with --client-image.
