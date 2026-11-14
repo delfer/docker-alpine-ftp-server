@@ -53,6 +53,8 @@ Names must match `[A-Za-z][A-Za-z0-9_]*`. Conflicting variables such as
 fail startup before the config is changed. vsftpd validates option names and
 types; unsupported options or invalid values fail startup. Values are not
 printed by the updater.
+Native vsftpd validation failures may exit without a diagnostic in Docker logs;
+inspect the exit status and rendered configuration when troubleshooting.
 
 The config is loaded after the existing `MIN_PORT`, `MAX_PORT`, `ADDRESS` and
 `TLS_CERT`/`TLS_KEY` command-line settings, so explicit `CONF_` values take
@@ -67,6 +69,9 @@ read-only. With overrides it must be writable; file ownership, permissions and
 bind mounts are preserved. Updates persist in the container config: removing a
 variable on a later run does not restore the previous value. Recreate the
 container from the image (and restore any persistent config) to reset it.
+Validation/rendering errors leave the original file intact. The final in-place
+write is not atomic; an I/O failure aborts startup and may require restoring the
+config.
 Custom commands passed to the container bypass the updater.
 
 ## USERS examples
