@@ -22,6 +22,7 @@ COPY --from=pidproxy /usr/bin/pidproxy /usr/bin/pidproxy
 RUN apk --no-cache add vsftpd=${VSFTPD_VERSION} tini
 
 COPY start_vsftpd.sh /bin/start_vsftpd.sh
+COPY update_conf.sh /bin/update_conf.sh
 COPY vsftpd.conf /etc/vsftpd/vsftpd.conf
 
 EXPOSE 21 21000-21010
