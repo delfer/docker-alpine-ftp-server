@@ -91,7 +91,8 @@ class Server:
             docker("network", "create", "--label", "ftp-test.run="+self.name, self.name)
             docker("create", "--name", self.name, "--network", self.name,
                    "--network-alias", "ftp.test", "--label", "ftp-test.run="+self.name,
-                   "-e", "USERS="+self.users, "-e", "ADDRESS=ftp.test",
+                   *([] if self.users is None else ["-e", "USERS="+self.users]),
+                   "-e", "ADDRESS=ftp.test",
                    *self.extra_args, *[arg for value in self.extra_env for arg in ("-e", value)],
                    *([] if self.security == "plain" else [
                        "-e", "TLS_CERT=/certs/cert.pem", "-e", "TLS_KEY=/certs/key.pem"]),
@@ -135,7 +136,7 @@ class Server:
         try:
             log = self.logs()
             # These are disposable credentials, nevertheless redact artifacts.
-            for value in self.users.split():
+            for value in (self.users or "").split():
                 fields = value.split("|")
                 if len(fields) > 1 and fields[1]:
                     log = log.replace(fields[1], "<redacted>")
@@ -229,7 +230,7 @@ def main():
     parser.add_argument("--image", default="ftp-under-test:local")
     parser.add_argument("--client-image", default="python:3.12-alpine")
     parser.add_argument("--output", type=Path, default=ROOT/"test-results")
-    parser.add_argument("--suite", choices=("all", "protocols", "accounts", "regressions", "config"), default="all")
+    parser.add_argument("--suite", choices=("all", "protocols", "accounts", "regressions", "config", "secrets"), default="all")
     parser.add_argument("--startup-attempts", type=int, default=5,
                         help="independent early-connect containers per security profile")
     ARGS = parser.parse_args()
@@ -255,6 +256,9 @@ def main():
         if ARGS.suite in ("all", "config"):
             import configuration
             configuration.run(sys.modules[__name__])
+        if ARGS.suite in ("all", "secrets"):
+            import user_secrets
+            user_secrets.run(sys.modules[__name__])
     return bool(write_report())
 
 

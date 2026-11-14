@@ -46,6 +46,26 @@ def transfer(ftp, user, name=None, payload=None):
 
 def handle(command):
     op = command['op']
+    if op == 'login_denied':
+        try:
+            ftp = protocol_connect('PASV', command['user'], command['password'])
+        except ftplib.error_perm as error:
+            if not str(error).startswith('530'):
+                raise
+        else:
+            ftp.close()
+            raise AssertionError('Rejected credentials allowed login')
+        return {}
+    if op == 'read_denied':
+        with connect(next(iter(CREDENTIALS))) as ftp:
+            try:
+                ftp.retrbinary('RETR '+command['path'], lambda data: None)
+            except ftplib.error_perm as error:
+                if not str(error).startswith('550'):
+                    raise
+            else:
+                raise AssertionError('Private file was readable over FTP')
+        return {}
     if op == 'ready':
         deadline = time.monotonic()+5
         while True:

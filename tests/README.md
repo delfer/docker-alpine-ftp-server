@@ -25,6 +25,14 @@ The same source inode is reused across containers with full, partial and removed
 overrides; source edits are reread on restart. The restored banner, umask and
 settings are checked in the generated config and through real FTP transfers.
 
+Use `--suite secrets` for `USERS_FILE` checks (also included in `all`). They cover
+conflicting/empty variables, missing/unreadable/non-regular/empty files, partial
+read failures, unchanged accounts on loader errors, invalid account creation,
+legacy defaults, literal passwords, multiple users and FTP/FTPS transfers after
+restart. Read-only directory mounts model Kubernetes Secret/ConfigMap symlinks,
+including atomic `..data` replacement and UID/GID settings. These are Docker
+fixtures; they do not require or test a live Kubernetes cluster.
+
 For a managed local daemon set DOCKER_HOST=unix:///var/run/docker.sock explicitly.
 The runner preserves DOCKER_HOST; it clears saved Docker context/TLS selectors.
 An alternative client image can be passed with --client-image.

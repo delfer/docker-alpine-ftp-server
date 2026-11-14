@@ -1,5 +1,23 @@
 #!/bin/sh
 
+# Read credentials before changing accounts. A supplied secret must never fall
+# back to the default account, even when its path or contents are empty.
+if [ "${USERS_FILE+x}" ]; then
+  if [ "${USERS+x}" ]; then
+    printf '%s\n' 'USERS and USERS_FILE are mutually exclusive' >&2
+    exit 1
+  fi
+  if [ ! -f "$USERS_FILE" ] || ! USERS=$(cat -- "$USERS_FILE" 2>/dev/null); then
+    printf '%s\n' 'USERS_FILE must point to a readable regular file' >&2
+    exit 1
+  fi
+  case "$USERS" in
+    *[![:space:]]*) ;;
+    *) printf '%s\n' 'USERS_FILE must contain at least one user' >&2; exit 1 ;;
+  esac
+fi
+unset USERS_FILE
+
 #Remove all ftp users
 grep '/ftp/' /etc/passwd | cut -d':' -f1 | xargs -r -n1 deluser
 
@@ -20,16 +38,15 @@ if [ -z "$USERS" ]; then
   USERS="alpineftp|alpineftp"
 fi
 
+# User entries are data, including any shell wildcard or backslash characters.
+set -f
 for i in $USERS ; do
   UID_OPT=
   GROUP_OPT=
-  NAME=$(echo $i | cut -d'|' -f1)
+  IFS='|' read -r NAME PASS FOLDER UID GID <<EOF
+$i
+EOF
   GROUP=$NAME
-  PASS=$(echo $i | cut -d'|' -f2)
-  FOLDER=$(echo $i | cut -d'|' -f3)
-  UID=$(echo $i | cut -d'|' -f4)
-  # Add group handling
-  GID=$(echo $i | cut -d'|' -f5)
 
   if [ -z "$FOLDER" ]; then
     FOLDER="/ftp/$NAME"
@@ -38,6 +55,13 @@ for i in $USERS ; do
   if { [ -e "$FOLDER" ] || [ -L "$FOLDER" ]; } && [ ! -d "$FOLDER" ]; then
     printf '%s\n' "Home path must be a directory: $FOLDER" >&2
     exit 1
+  fi
+
+  # Custom-home accounts survive the /ftp/ cleanup. Recreate matching non-root
+  # accounts too, so restarts apply rotated credentials and UID/GID settings.
+  if [ "$(getent passwd "$NAME" | cut -d: -f6)" = "$FOLDER" ] &&
+     [ "$(id -u "$NAME")" != 0 ]; then
+    deluser "$NAME" || exit $?
   fi
 
   if [ -n "$UID" ]; then
@@ -50,7 +74,7 @@ for i in $USERS ; do
   if [ -n "$GID" ]; then
     GROUP=$(getent group "$GID" | cut -d: -f1)
     if [ -z "$GROUP" ]; then
-      addgroup -g "$GID" "$NAME"
+      addgroup -g "$GID" "$NAME" || exit $?
       GROUP=$NAME
     fi
     GROUP_OPT="-G $GROUP"
@@ -63,12 +87,13 @@ for i in $USERS ; do
     FOLDER_MODE=$(stat -L -c '%a' "$FOLDER") || exit 1
   fi
 
-  echo -e "$PASS\n$PASS" | adduser -h "$FOLDER" -s /sbin/nologin $UID_OPT $GROUP_OPT "$NAME"
-  mkdir -p "$FOLDER"
-  chown "$NAME:$GROUP" "$FOLDER"
-  chmod "$FOLDER_MODE" "$FOLDER"
+  printf '%s\n' "$PASS" "$PASS" | adduser -h "$FOLDER" -s /sbin/nologin $UID_OPT $GROUP_OPT "$NAME" || exit $?
+  mkdir -p "$FOLDER" || exit $?
+  chown "$NAME:$GROUP" "$FOLDER" || exit $?
+  chmod "$FOLDER_MODE" "$FOLDER" || exit $?
   unset NAME PASS FOLDER UID GID
 done
+unset i
 
 
 if [ -z "$MIN_PORT" ]; then
