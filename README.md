@@ -98,6 +98,21 @@ Unlike that version, sending `SIGHUP` to vsftpd rereads the generated runtime fi
 does not regenerate it from the source. Change any source-edit-and-SIGHUP
 automation to restart the container after editing the source.
 
+## Common configuration examples
+
+Add the needed arguments before the image name in the `docker run` example above:
+
+| Goal | Extra arguments |
+| --- | --- |
+| Confine users to their home | `-e CONF_chroot_local_user=YES -e CONF_allow_writeable_chroot=YES` |
+| Read-only FTP access | `-e CONF_write_enable=NO` |
+| Custom welcome banner | `-e CONF_ftpd_banner='Welcome FTP Server'` |
+| Control port 2121 | `-e CONF_listen_port=2121` (replace `-p "21:21"` with `-p "2121:2121"`) |
+| Anonymous read-only downloads | `-e CONF_anonymous_enable=YES -e CONF_anon_root=/srv/public -e CONF_write_enable=NO` |
+
+For anonymous downloads, also mount `-v "$PWD/public:/srv/public:ro"` with
+traversable directories and readable files (typically `0755` and `0644`).
+
 ## USERS examples
 
 - `user|password foo|bar|/home/foo`
