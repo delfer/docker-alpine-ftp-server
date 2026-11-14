@@ -31,7 +31,8 @@ Environment variables:
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
 - `CONF_<OPTION>` - set a vsftpd configuration option (optional; option names are case-insensitive, prefix is `CONF_`)
 
-When upgrading from master, no data/config conversion is needed for the existing
+When upgrading from master at `981ebce` (before `CONF_` support), no data/config
+conversion is needed for the existing
 environment variables and source-config mounts. Review any previously unused
 `CONF_` variables: this prefix is now interpreted as vsftpd options.
 
@@ -93,7 +94,7 @@ supported, with or without overrides):
 
 The effective configuration is a snapshot taken at startup. Restart the container
 to read edits to the source file; recreate it to apply environment changes.
-Unlike master, sending `SIGHUP` to vsftpd rereads the generated runtime file and
+Unlike that version, sending `SIGHUP` to vsftpd rereads the generated runtime file and
 does not regenerate it from the source. Change any source-edit-and-SIGHUP
 automation to restart the container after editing the source.
 
