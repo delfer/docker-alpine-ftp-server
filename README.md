@@ -31,6 +31,10 @@ Environment variables:
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
 - `CONF_<OPTION>` - set a vsftpd configuration option (optional; option names are case-insensitive, prefix is `CONF_`)
 
+When upgrading from master, no data/config conversion is needed for the existing
+environment variables and source-config mounts. Review any previously unused
+`CONF_` variables: this prefix is now interpreted as vsftpd options.
+
 ## Custom vsftpd options
 
 For example, add these arguments to `docker run`:
@@ -76,6 +80,8 @@ applicable (for example, `MIN_PORT`), or to vsftpd's default. For example, sourc
 `max_clients=20`, then `CONF_max_clients=10`, then removing that variable produces
 `20`, `10`, `20` across those starts. Runtime files from previous starts are never
 used as the source. Custom commands passed to the container bypass generation.
+The runtime directory `/var/run/vsftpd` must permit creating and renaming files.
+Mount custom configuration at the source path rather than the generated path.
 
 To supply your own config, mount it at the existing source path (read-only is
 supported, with or without overrides):
@@ -87,8 +93,9 @@ supported, with or without overrides):
 
 The effective configuration is a snapshot taken at startup. Restart the container
 to read edits to the source file; recreate it to apply environment changes.
-Existing files already modified by an older image must be restored once to the
-desired source configuration; the original values cannot be inferred.
+Unlike master, sending `SIGHUP` to vsftpd rereads the generated runtime file and
+does not regenerate it from the source. Change any source-edit-and-SIGHUP
+automation to restart the container after editing the source.
 
 ## USERS examples
 
