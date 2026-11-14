@@ -69,7 +69,7 @@ read-only. With overrides it must be writable; file ownership, permissions and
 bind mounts are preserved. Updates persist in the container config: removing a
 variable on a later run does not restore the previous value. Recreate the
 container from the image (and restore any persistent config) to reset it.
-Validation/rendering errors leave the original file intact. The final in-place
+Updater validation/rendering errors leave the original file intact. The final in-place
 write is not atomic; an I/O failure aborts startup and may require restoring the
 config.
 Custom commands passed to the container bypass the updater.

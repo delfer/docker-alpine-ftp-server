@@ -17,6 +17,10 @@ execute the shipped updater with the image's BusyBox shell/awk. They verify
 literal values, case aliases/conflicts, active/commented/missing/duplicate
 options, idempotence, validation before writing, preserved metadata/symlinks and
 temporary/final-write errors. These checks also run in the default `all` suite.
+Live checks cover banner, umask, chroot, read-only policy and passive-range/address
+precedence over legacy environment settings, through PASV/EPSV/PORT/EPRT on plain
+FTP, TLS1.2 and TLS1.3, before and after restart. Startup validation, custom-command
+bypass and real writable/read-only file bind mounts are also exercised.
 
 For a managed local daemon set DOCKER_HOST=unix:///var/run/docker.sock explicitly.
 The runner preserves DOCKER_HOST; it clears saved Docker context/TLS selectors.
