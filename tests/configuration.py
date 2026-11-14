@@ -41,6 +41,8 @@ def file_cases(h):
         ('no-overrides', '# untouched\nftpd_banner=old', (), '# untouched\nftpd_banner=old', None),
         ('unrelated-multiline-env', 'ftpd_banner=old', ('UNRELATED=x\nCONF_ftpd_banner=injected',),
          'ftpd_banner=old', None),
+        ('ignore-other-prefixes', 'ftpd_banner=old', ('conf_ftpd_banner=ignored', 'XCONF_ftpd_banner=ignored'),
+         'ftpd_banner=old', None),
         ('replace-active', 'local_enable=YES\nwrite_enable=YES\n', ('CONF_WRITE_ENABLE=NO',),
          'local_enable=YES\nwrite_enable=NO\n', None),
         ('uncomment-whitespace', '# Keep this comment\n \t# \tchroot_local_user \t= NO\n',
@@ -121,8 +123,16 @@ def files_and_errors(h, server):
                     ('CONF_write_enable=YES', 'PATH=/tmp/updater-bin:/bin:/usr/bin',
                      'TMPDIR=/tmp/updater-work'))
     h.require(result.returncode == 73, 'Final write failure status was swallowed')
+    h.require('update_conf: failed to write configuration' in result.stderr,
+              'Final write failure lacks an updater diagnostic')
     h.require(not server.exec('ls', '-A', '/tmp/updater-work').stdout, 'Temporary file leaked')
+    result = invoke(h, server, '/tmp/config-target',
+                    ('CONF_ftpd_banner=invalid\nvalue', 'TMPDIR=/tmp/updater-work'))
+    h.require(result.returncode != 0, 'Validation failure was swallowed')
+    h.require(not server.exec('ls', '-A', '/tmp/updater-work').stdout, 'Validation leaked a temporary file')
 
 
 def run(h):
     h.check('config/renderer-fixture', lambda: file_cases(h))
+    import config_integration
+    config_integration.run(h)
