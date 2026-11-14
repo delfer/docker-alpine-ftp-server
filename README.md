@@ -26,6 +26,8 @@ docker run -d \
 Environment variables:
 - `USERS` - space and `|` separated list (optional, default: `alpineftp|alpineftp`)
   - format `name1|password1|[folder1][|uid1][|gid1] name2|password2|[folder2][|uid2][|gid2]`
+- `USERS_FILE` - read the user list from a mounted file instead of `USERS`; see
+  [Docker and Kubernetes secrets](docs/secrets.md) for examples and failure behavior
 - `ADDRESS` - external address to which clients can connect for passive ports (optional, should resolve to ftp server ip address)
 - `MIN_PORT` - minimum port number to be used for passive connections (optional, default `21000`)
 - `MAX_PORT` - maximum port number to be used for passive connections (optional, default `21010`)
