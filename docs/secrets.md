@@ -16,14 +16,18 @@ With neither variable set, or with only `USERS=''`, the existing default account
 remains unchanged.
 
 The loader follows symlinks, reads once per start, leaves the source unchanged,
-and does not print or export file credentials. Keep the file readable by the
-container's root account and mount it read-only. Only `USERS_FILE` is supported;
+and does not print or export file credentials. Keep the file owned/readable only
+by the container's root account and mount it read-only. FTP users are not
+chrooted by default: a broadly readable secret could be downloaded over FTP.
+Only `USERS_FILE` is supported;
 `TLS_CERT` and `TLS_KEY` already accept paths to certificate/key files.
 
 ## Docker Compose
 
-Create a local `users` file with your credentials and restrict its permissions
-(for example, `chmod 600 users`). Do not commit it to version control.
+Create a local `users` file with your credentials. With a regular rootful Docker
+daemon on Linux, use `sudo chown 0:0 users` and `sudo chmod 400 users` so only
+container root can read it. With user namespaces, map ownership to container
+root instead. Do not commit this file to version control.
 
 ```yaml
 services:
@@ -78,6 +82,7 @@ volumes:
   - name: users
     secret:
       secretName: ftp-users
+      defaultMode: 0400
   - name: config
     configMap:
       name: ftp-config
@@ -87,6 +92,8 @@ The ConfigMap must contain `vsftpd.conf`; mounting the directory hides the image
 copy. It must remain root-owned, as required by vsftpd. `CONF_*` overrides still
 work because the runtime config is generated separately in `/var/run/vsftpd`.
 FTP exposure and passive-address/port settings depend on your cluster network.
+Keep the Secret's explicit `0400` mode: Kubernetes' default `0644` would make the
+credentials readable by FTP accounts.
 
 Kubernetes' projected `..data` symlinks work for both mounts. Once an updated
 Secret/ConfigMap has been projected, restart the container (or roll out new Pods)

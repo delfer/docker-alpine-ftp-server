@@ -70,6 +70,7 @@ def literal_logins(h, security, ending):
         before = snapshot(server, SECRET)
         with Client(h, server, credentials=CREDENTIALS) as client:
             client.call('persistent')
+            client.call('read_denied', path=SECRET)
             client.call('login_denied', user='alpineftp', password='alpineftp')
             stop(h, server)
             server.start()
@@ -148,6 +149,7 @@ def projected_volumes(h):
                     with Client(h, server, credentials=dict(alice=password),
                                 homes=dict(alice='/home/alice/nested')) as client:
                         client.call('persistent')
+                        client.call('read_denied', path='/run/secrets/users')
                         if generation == 'v2':
                             client.call('login_denied', user='alice', password='test-pass-a')
                     h.require(banner in server.exec('cat', '/var/run/vsftpd/vsftpd.conf').stdout,
