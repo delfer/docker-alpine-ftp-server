@@ -92,7 +92,7 @@ if [ ! -z "$1" ]; then
   exec "$@"
 else
   /bin/update_conf.sh || exit $?
-  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT $TLS_OPT /etc/vsftpd/vsftpd.conf || exit $?
+  vsftpd -opasv_min_port=$MIN_PORT -opasv_max_port=$MAX_PORT $ADDR_OPT $TLS_OPT /var/run/vsftpd/vsftpd.conf || exit $?
   mkdir -p /var/run/vsftpd || exit 1
   # The listener predates its session workers. Exact matching excludes this
   # script and short-lived pipeline children that inherit its process name.

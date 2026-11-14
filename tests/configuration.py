@@ -1,11 +1,14 @@
 """CONF_ rendering checks run with the shipped shell, awk and updater."""
-def invoke(h, server, path, environment=(), user=None):
+RUNTIME_PATH = '/tmp/rendered-config'
+
+
+def invoke(h, server, path, environment=(), user=None, output=RUNTIME_PATH):
     args = ['exec']
     if user is not None:
         args += ['--user', user]
     for item in environment:
         args += ['-e', item]
-    return h.docker(*args, server.name, '/bin/update_conf.sh', path, check=False)
+    return h.docker(*args, server.name, '/bin/update_conf.sh', path, output, check=False)
 
 
 def snapshot(server, path):
@@ -15,25 +18,27 @@ def snapshot(server, path):
 
 def render_case(h, server, source, environment, expected=None, error=None):
     path = '/tmp/config-fixture'
-    h.copy_files(server.name, [('tmp/config-fixture', source.encode(), 0o640, 12345, 23456)])
+    h.copy_files(server.name, [('tmp/config-fixture', source.encode(), 0o440, 0, 0),
+                               ('tmp/rendered-config', b'previous generation', 0o600, 0, 0)])
     before = snapshot(server, path)
+    previous = snapshot(server, RUNTIME_PATH)
     result = invoke(h, server, path, environment)
-    after = snapshot(server, path)
+    h.require(snapshot(server, path) == before, 'Rendering changed source bytes/metadata')
+    after = snapshot(server, RUNTIME_PATH)
     if error:
         h.require(result.returncode != 0, 'Invalid override succeeded')
         h.require(error in result.stderr, 'Missing error diagnostic: '+result.stderr)
-        h.require(after == before, 'Validation failure changed config bytes/metadata')
+        h.require(after == previous, 'Validation failure changed published runtime config')
     else:
-        h.require(result.returncode == 0, 'Updater failed: '+result.stderr)
+        h.require(result.returncode == 0, 'Renderer failed: '+result.stderr)
         h.require(after[0] == expected, f'Config differs: {after[0]!r} != {expected!r}')
-        h.require(after[1].split(':')[:4] == before[1].split(':')[:4],
-                  'Config inode, owner or permissions changed')
+        h.require(server.exec('stat', '-c', '%u:%g:%a', RUNTIME_PATH).stdout.strip() == '0:0:600',
+                  'Runtime config must be private and root-owned')
         repeated = invoke(h, server, path, environment)
-        h.require(repeated.returncode == 0, 'Repeated update failed: '+repeated.stderr)
-        h.require(snapshot(server, path) == after, 'Repeated update is not idempotent')
-        if not environment or environment[0].startswith('UNRELATED='):
-            h.require(after == before, 'No-override run modified config')
-    h.require(not result.stdout, 'Updater must not print option values')
+        h.require(repeated.returncode == 0, 'Repeated render failed: '+repeated.stderr)
+        h.require(snapshot(server, RUNTIME_PATH)[0] == after[0], 'Rendering is not idempotent')
+        h.require(snapshot(server, path) == before, 'Repeated render changed the source')
+    h.require(not result.stdout, 'Renderer must not print option values')
 
 
 def file_cases(h):
@@ -80,56 +85,75 @@ def file_cases(h):
             h.check('config/render/'+label, lambda s=source, e=environment, x=expected, err=error:
                     render_case(h, server, s, e, x, err))
         h.check('config/files-and-errors', lambda: files_and_errors(h, server))
+        h.check('config/removed-overrides', lambda: removed_overrides(h, server))
 
 
 def files_and_errors(h, server):
     h.require(h.docker('exec', server.name, 'test', '!', '-e', '/tmp/CONF_EXECUTED',
                        check=False).returncode == 0, 'Option value executed as a command')
-    missing = invoke(h, server, '/tmp/missing-config', ('CONF_write_enable=NO',))
-    h.require(missing.returncode != 0 and 'existing writable file' in missing.stderr,
-              'Missing configuration was not rejected')
-    # No overrides must also work when no writable configuration is available.
-    h.require(invoke(h, server, '/tmp/missing-config').returncode == 0,
-              'No-op run unnecessarily requires a config')
+    for environment in ((), ('CONF_write_enable=NO',)):
+        missing = invoke(h, server, '/tmp/missing-config', environment)
+        h.require(missing.returncode != 0 and 'existing readable file' in missing.stderr,
+                  'Missing source configuration was not rejected')
     h.copy_files(server.name, [('tmp/readonly-config', b'write_enable=YES\n', 0o444, 0, 0)])
     before = snapshot(server, '/tmp/readonly-config')
-    h.require(invoke(h, server, '/tmp/readonly-config', user='1000').returncode == 0,
-              'No-op run requires write access')
-    denied = invoke(h, server, '/tmp/readonly-config', ('CONF_write_enable=NO',), user='1000')
-    h.require(denied.returncode != 0 and 'existing writable file' in denied.stderr,
-              'Unwritable config was not rejected')
-    h.require(snapshot(server, '/tmp/readonly-config') == before, 'Read-only file changed')
+    result = invoke(h, server, '/tmp/readonly-config', ('CONF_write_enable=NO',))
+    h.require(result.returncode == 0, result.stderr)
+    h.require(snapshot(server, RUNTIME_PATH)[0] == 'write_enable=NO\n', 'Read-only source override ignored')
+    h.require(snapshot(server, '/tmp/readonly-config') == before, 'Read-only source changed')
 
     h.copy_files(server.name, [('tmp/config-target', b'write_enable=YES\n', 0o600, 0, 0),
                                ('tmp/config-link', '/tmp/config-target', 0o777, 0, 0)])
     server.exec('ln', '/tmp/config-target', '/tmp/config-hardlink')
+    before = snapshot(server, '/tmp/config-target')
     result = invoke(h, server, '/tmp/config-link', ('CONF_write_enable=NO',))
     h.require(result.returncode == 0, result.stderr)
     h.require(server.exec('readlink', '/tmp/config-link').stdout.strip() == '/tmp/config-target',
-              'Updater replaced symlink')
-    h.require(server.exec('cat', '/tmp/config-hardlink').stdout == 'write_enable=NO\n',
-              'Updater replaced target inode')
+              'Renderer replaced source symlink')
+    h.require(snapshot(server, '/tmp/config-hardlink') == before, 'Renderer changed source inode')
+    for output in ('/tmp/config-target', '/tmp/config-link', '/tmp/config-hardlink'):
+        result = invoke(h, server, '/tmp/config-target', ('CONF_write_enable=NO',), output=output)
+        h.require(result.returncode != 0 and 'separate file' in result.stderr,
+                  'Renderer accepted source/destination alias')
+    h.require(snapshot(server, '/tmp/config-target') == before, 'Alias rejection changed source')
 
-    before = snapshot(server, '/tmp/config-target')
-    result = invoke(h, server, '/tmp/config-target', ('CONF_write_enable=YES', 'TMPDIR=/missing-tmp'))
-    h.require(result.returncode != 0, 'Temporary file failure was ignored')
-    h.require(snapshot(server, '/tmp/config-target') == before, 'Temp failure changed config')
-
-    # Fault injection checks the final write status and temporary-file cleanup.
     h.copy_files(server.name, [('tmp/updater-bin', None, 0o755, 0, 0),
-                               ('tmp/updater-bin/cat', b'#!/bin/sh\nexit 73\n', 0o755, 0, 0),
-                               ('tmp/updater-work', None, 0o700, 0, 0)])
-    result = invoke(h, server, '/tmp/config-target',
-                    ('CONF_write_enable=YES', 'PATH=/tmp/updater-bin:/bin:/usr/bin',
-                     'TMPDIR=/tmp/updater-work'))
-    h.require(result.returncode == 73, 'Final write failure status was swallowed')
-    h.require('update_conf: failed to write configuration' in result.stderr,
-              'Final write failure lacks an updater diagnostic')
-    h.require(not server.exec('ls', '-A', '/tmp/updater-work').stdout, 'Temporary file leaked')
-    result = invoke(h, server, '/tmp/config-target',
-                    ('CONF_ftpd_banner=invalid\nvalue', 'TMPDIR=/tmp/updater-work'))
+                               ('tmp/updater-bin/mv', b'#!/bin/sh\nexit 73\n', 0o755, 0, 0),
+                               ('tmp/updater-bin/mktemp', b'#!/bin/sh\nexit 72\n', 0o755, 0, 0),
+                               ('tmp/updater-work', None, 0o700, 0, 0),
+                               ('tmp/updater-work/runtime.conf', b'last valid generation', 0o600, 0, 0)])
+    output = '/tmp/updater-work/runtime.conf'
+    previous = snapshot(server, output)
+    environment = ('CONF_write_enable=NO', 'PATH=/tmp/updater-bin:/bin:/usr/bin')
+    result = invoke(h, server, '/tmp/config-target', environment, output=output)
+    h.require(result.returncode == 72, 'Temporary file creation failure was ignored')
+    server.exec('rm', '/tmp/updater-bin/mktemp')
+    result = invoke(h, server, '/tmp/config-target', environment, output=output)
+    h.require(result.returncode == 73 and 'failed to publish runtime configuration' in result.stderr,
+              'Atomic publication failure was swallowed')
+    h.require(snapshot(server, output) == previous, 'Publication failure changed last valid generation')
+    h.require(snapshot(server, '/tmp/config-target') == before, 'Publication failure changed source')
+    result = invoke(h, server, '/tmp/config-target', ('CONF_ftpd_banner=invalid\nvalue',), output=output)
     h.require(result.returncode != 0, 'Validation failure was swallowed')
-    h.require(not server.exec('ls', '-A', '/tmp/updater-work').stdout, 'Validation leaked a temporary file')
+    h.require(snapshot(server, output) == previous, 'Validation changed last valid generation')
+    h.require(server.exec('ls', '-A', '/tmp/updater-work').stdout == 'runtime.conf\n',
+              'Failed rendering/publication leaked temporary files')
+
+
+def removed_overrides(h, server):
+    source = 'ftpd_banner=Custom source\nmax_clients=20\n'
+    h.copy_files(server.name, [('tmp/removal-source', source.encode(), 0o440, 0, 0)])
+    before = snapshot(server, '/tmp/removal-source')
+    for environment, expected in [
+        (('CONF_ftpd_banner=Override', 'CONF_max_clients=10', 'CONF_max_per_ip=3'),
+         'ftpd_banner=Override\nmax_clients=10\nmax_per_ip=3\n'),
+        (('CONF_max_clients=10',), 'ftpd_banner=Custom source\nmax_clients=10\n'),
+        ((), source),
+    ]:
+        result = invoke(h, server, '/tmp/removal-source', environment)
+        h.require(result.returncode == 0, result.stderr)
+        h.require(snapshot(server, RUNTIME_PATH)[0] == expected, 'Removed override persisted in runtime config')
+        h.require(snapshot(server, '/tmp/removal-source') == before, 'Rendering modified the source')
 
 
 def run(h):
