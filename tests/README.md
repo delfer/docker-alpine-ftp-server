@@ -57,8 +57,8 @@ starts, future features and decision cases remain in that catalogue. A green
 run must not be described as full catalogue coverage.
 
 GitHub: the existing publish workflow runs integration tests before its existing
-publish job. The additional ftp-tests workflow runs for test/workflow pushes,
-daily and manually; it never publishes an image. Artifacts upload even on
+publish job. The additional ftp-tests workflow runs for test/workflow pushes
+and manually; it never publishes an image. Artifacts upload even on
 failure. A failing application test intentionally blocks the existing release
 dependency, without modifying the application's behavior.
 
